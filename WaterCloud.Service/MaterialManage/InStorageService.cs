@@ -10,6 +10,7 @@ using WaterCloud.Domain.ClassTask;
 using WaterCloud.Service.ClassTask;
 using System.Net.Http;
 using WaterCloud.Domain.QualityManage;
+using WaterCloud.Service.SystemSecurity;
 
 namespace WaterCloud.Service.MaterialManage
 {
@@ -24,12 +25,14 @@ namespace WaterCloud.Service.MaterialManage
         private TransferBoxService transferApp;
         private LocationService locationApp;
         private ControlJobService jobApp;
+        private BusinessLogService _logApp;
         public InStorageService(IDbContext context, IHttpClientFactory httpClientFactory) : base(context)
         {
             itemsApp = new ItemsDataService(context);
             transferApp = new TransferBoxService(context);
             locationApp = new LocationService(context);
             jobApp = new ControlJobService(context, httpClientFactory);
+            _logApp = new BusinessLogService(context);
         }
 
         #region 获取数据
@@ -534,6 +537,7 @@ namespace WaterCloud.Service.MaterialManage
                 }
             }
             uniwork.Commit();
+            await _logApp.WriteLog(2, "入库:物料" + material.F_MaterialName + "入库数量" + (entity.F_Num ?? 0), "", "", material.F_MaterialName, entity.F_TransferBoxCode, entity.F_Num);
         }
         public async Task InStorageCancleBanding(string code)
         {

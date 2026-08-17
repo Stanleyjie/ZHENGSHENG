@@ -25,13 +25,6 @@
             描 述：信息设置控制器类
             </summary>
         </member>
-        <member name="T:WaterCloud.Web.Areas.DingTalkManage.Controllers.DingTalkConfigController">
-            <summary>
-            创 建：超级管理员
-            日 期：2020-11-21 09:52
-            描 述：应用配置控制器类
-            </summary>
-        </member>
         <member name="T:WaterCloud.Web.Areas.EquipmentManage.Controllers.EqpAreaController">
             <summary>
             创 建：超级管理员
@@ -293,6 +286,55 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:WaterCloud.Web.Areas.PurchaseManage.Controllers.PurchaseInquiryController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：采购询价单控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.PurchaseManage.Controllers.PurchaseOrderController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-14
+            描 述：采购订单控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.PurchaseManage.Controllers.PurchasePaymentController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：采购付款控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.PurchaseManage.Controllers.PurchaseReceiveController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：采购收货单控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.PurchaseManage.Controllers.PurchaseReportController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：采购统计报表控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.PurchaseManage.Controllers.PurchaseReturnController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：采购退货单控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.PurchaseManage.Controllers.SupplierController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：供应商管理控制器类
+            </summary>
+        </member>
         <member name="T:WaterCloud.Web.Areas.QualityManage.Controllers.CheckoutDescriptionController">
             <summary>
             创 建：超级管理员
@@ -332,6 +374,55 @@
             创 建：超级管理员
             日 期：2021-01-25 08:29
             描 述：看板账户控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.SalesManage.Controllers.CustomerController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：客户管理控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.SalesManage.Controllers.SalesDeliveryController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：销售发货单控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.SalesManage.Controllers.SalesOrderController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-14
+            描 述：销售订单控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.SalesManage.Controllers.SalesQuoteController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：销售报价单控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.SalesManage.Controllers.SalesReceiptController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：销售收款控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.SalesManage.Controllers.SalesReportController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：销售统计报表控制器类
+            </summary>
+        </member>
+        <member name="T:WaterCloud.Web.Areas.SalesManage.Controllers.SalesReturnController">
+            <summary>
+            创 建：超级管理员
+            日 期：2026-08-15
+            描 述：销售退货单控制器类
             </summary>
         </member>
         <member name="T:WaterCloud.Web.Areas.SystemManage.Controllers.FlowschemeController">
@@ -1604,25 +1695,6 @@
             <param name="username">用户</param>
             <param name="password">密码</param>
             <param name="localurl">域名</param>
-            <returns></returns>
-        </member>
-        <member name="M:WaterCloud.Web.Controllers.LoginController.DingBandingUser(System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            钉钉绑定
-            </summary>
-            <param name="username">用户</param>
-            <param name="password">密码</param>
-            <param name="localurl">域名</param>
-            <param name="OpenId">钉钉用户openId</param>
-            <param name="Nick">钉钉用户名称</param>
-            <param name="UnionId">钉钉用户应用Id</param>
-            <returns></returns>
-        </member>
-        <member name="M:WaterCloud.Web.Controllers.LoginController.DingLogin(System.String)">
-            <summary>
-            钉钉扫码登录
-            </summary>
-            <param name="code">临时授权</param>
             <returns></returns>
         </member>
         <member name="M:WaterCloud.Web.BaseController.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">

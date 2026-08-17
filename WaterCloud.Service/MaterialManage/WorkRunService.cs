@@ -14,6 +14,7 @@ using System.Net.Http;
 using WaterCloud.Domain.QualityManage;
 using WaterCloud.Domain.SystemOrganize;
 using WaterCloud.Service.SystemManage;
+using WaterCloud.Service.SystemSecurity;
 using static Serenity.Web.PropertyItemsScript;
 
 namespace WaterCloud.Service.MaterialManage
@@ -34,6 +35,7 @@ namespace WaterCloud.Service.MaterialManage
         private StorageService _storageApp;
         private ControlJobService _jobApp;
         private ItemsDataService itemsApp;
+        private BusinessLogService _logApp;
 
 		public WorkRunService(IDbContext context, IHttpClientFactory httpClientFactory)
         {
@@ -44,6 +46,7 @@ namespace WaterCloud.Service.MaterialManage
 			itemsApp = new ItemsDataService(context);
 			_storageApp = new StorageService(context, httpClientFactory);
             _jobApp = new ControlJobService(context, httpClientFactory);
+            _logApp = new BusinessLogService(context);
             if (currentuser == null)
             {
                 currentuser = new OperatorModel();
@@ -371,6 +374,7 @@ namespace WaterCloud.Service.MaterialManage
                 F_LocationCode = null,
             });
             uniwork.Commit();
+            await _logApp.WriteLog(0, "领料:设备" + entity.F_EqpName + "领用物料" + storage.F_MaterialName + "数量" + (entity.F_Num ?? 0), entity.F_EqpName, work.F_WorkOrderCode, storage.F_MaterialName, storage.F_TransferBoxCode, entity.F_Num);
         }
         public async Task ConsumeMaterial(string keyValue, string transferBoxCode)
         {
@@ -1019,6 +1023,7 @@ namespace WaterCloud.Service.MaterialManage
                 throw new Exception("流转箱产出数量超出限制,请检查");
             }
             uniwork.Commit();
+            await _logApp.WriteLog(1, "产出:设备" + entity.F_EqpName + "产出物料" + entity.F_MaterialName + "数量" + (entity.F_Num ?? 0), entity.F_EqpName, entity.F_WorkOrderCode, entity.F_MaterialName, entity.F_TransferBoxCode, entity.F_Num);
         }
 
         public async Task OutputMaterial(string keyValue, string materialId, string transferBoxCode, int outnum, string materialBatch)

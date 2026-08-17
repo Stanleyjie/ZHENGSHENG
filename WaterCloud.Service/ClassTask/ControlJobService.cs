@@ -290,35 +290,38 @@ namespace WaterCloud.Service.ClassTask
             {
                 case 0:
                     var temp0 = await uniwork.FindEntity<MaterialEntity>(data.F_NeedId);
-                    data.F_MaterialCode = temp0.F_MaterialCode;
-                    data.F_MaterialName = temp0.F_MaterialName;
-                    data.F_MaterialUnit = temp0.F_MaterialUnit;
-                    if (data.F_FinishTime == null)
+                    if (temp0 != null)
                     {
-                        data.uses = uniwork.IQueryable<EqpMaterialUseEntity>(a => a.F_MaterialId == temp0.F_Id && a.F_EqpId == data.F_NeedEqpId && a.F_CreatorTime > data.F_DoneTime).ToList();
-                    }
-                    else
-                    {
-                        data.uses = uniwork.IQueryable<EqpMaterialUseEntity>(a => a.F_MaterialId == temp0.F_Id && a.F_EqpId == data.F_NeedEqpId && a.F_CreatorTime >= data.F_CreatorTime && a.F_CreatorTime <= data.F_FinishTime).ToList();
-                    }
-                    data.F_FinishNum = data.uses.Sum(a => a.F_Num);
-                    data.F_NeedDoNum = (data.F_NeedNum ?? 0) - (data.F_FinishNum ?? 0);
-                    if (data.F_NeedDoNum == 0)
-                    {
-                        break;
-                    }
-                    data.storages = uniwork.IQueryable<StorageEntity>(a => a.F_MaterialId == temp0.F_Id).OrderBy(a => a.F_CreatorTime).ToList();
-                    var work = uniwork.IQueryable<WorkOrderDetailEqpBandingEntity>(a => a.F_EqpId == data.F_NeedEqpId)
-                            .InnerJoin<WorkOrderDetailEntity>((a, b) => a.F_WorkOrderDetailId == b.F_Id && b.F_WorkOrderState == 1)
-                            .InnerJoin<WorkOrderDetailProcessBandingEntity>((a,b,c)=>b.F_Id==c.F_WorkOrderDetailId)
-                            .InnerJoin<BomFormEntity>((a, b, c,d) => b.F_MaterialId == d.F_MaterialId&&c.F_ProcessId==d.F_ProcessId && d.F_BomType == 1 && d.F_SonMaterialId == temp0.F_Id)
-                            .Select((a, b, c,d) => b).FirstOrDefault();
-                    //是否多工序作业
-                    if (work != null && work.F_RunSort != 1)
-                    {
-                        data.storages = uniwork.IQueryable<OutPutInfoEntity>(a => a.F_WorkOrderId == work.F_WorkOrderId && a.F_MaterialId == temp0.F_Id && a.F_IsTemp != true)
-                            .InnerJoin<StorageEntity>((a, b) => a.F_TransferBoxCode == b.F_TransferBoxCode && a.F_LocationCode == b.F_LocationCode && a.F_MaterialId == b.F_MaterialId
-                            && a.F_MaterialBatch == b.F_MaterialBatch).Select((a, b) => b).OrderBy(a => a.F_CreatorTime).ToList();
+                        data.F_MaterialCode = temp0.F_MaterialCode;
+                        data.F_MaterialName = temp0.F_MaterialName;
+                        data.F_MaterialUnit = temp0.F_MaterialUnit;
+                        if (data.F_FinishTime == null)
+                        {
+                            data.uses = uniwork.IQueryable<EqpMaterialUseEntity>(a => a.F_MaterialId == temp0.F_Id && a.F_EqpId == data.F_NeedEqpId && a.F_CreatorTime > data.F_DoneTime).ToList();
+                        }
+                        else
+                        {
+                            data.uses = uniwork.IQueryable<EqpMaterialUseEntity>(a => a.F_MaterialId == temp0.F_Id && a.F_EqpId == data.F_NeedEqpId && a.F_CreatorTime >= data.F_CreatorTime && a.F_CreatorTime <= data.F_FinishTime).ToList();
+                        }
+                        data.F_FinishNum = data.uses.Sum(a => a.F_Num);
+                        data.F_NeedDoNum = (data.F_NeedNum ?? 0) - (data.F_FinishNum ?? 0);
+                        if (data.F_NeedDoNum == 0)
+                        {
+                            break;
+                        }
+                        data.storages = uniwork.IQueryable<StorageEntity>(a => a.F_MaterialId == temp0.F_Id).OrderBy(a => a.F_CreatorTime).ToList();
+                        var work = uniwork.IQueryable<WorkOrderDetailEqpBandingEntity>(a => a.F_EqpId == data.F_NeedEqpId)
+                                .InnerJoin<WorkOrderDetailEntity>((a, b) => a.F_WorkOrderDetailId == b.F_Id && b.F_WorkOrderState == 1)
+                                .InnerJoin<WorkOrderDetailProcessBandingEntity>((a,b,c)=>b.F_Id==c.F_WorkOrderDetailId)
+                                .InnerJoin<BomFormEntity>((a, b, c,d) => b.F_MaterialId == d.F_MaterialId&&c.F_ProcessId==d.F_ProcessId && d.F_BomType == 1 && d.F_SonMaterialId == temp0.F_Id)
+                                .Select((a, b, c,d) => b).FirstOrDefault();
+                        //是否多工序作业
+                        if (work != null && work.F_RunSort != 1)
+                        {
+                            data.storages = uniwork.IQueryable<OutPutInfoEntity>(a => a.F_WorkOrderId == work.F_WorkOrderId && a.F_MaterialId == temp0.F_Id && a.F_IsTemp != true)
+                                .InnerJoin<StorageEntity>((a, b) => a.F_TransferBoxCode == b.F_TransferBoxCode && a.F_LocationCode == b.F_LocationCode && a.F_MaterialId == b.F_MaterialId
+                                && a.F_MaterialBatch == b.F_MaterialBatch).Select((a, b) => b).OrderBy(a => a.F_CreatorTime).ToList();
+                        }
                     }
                     break;
                 case 1:

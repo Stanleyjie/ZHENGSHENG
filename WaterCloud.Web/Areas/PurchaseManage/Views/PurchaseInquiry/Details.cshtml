@@ -1,0 +1,103 @@
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'commonTable', 'table', 'common', 'optimizeSelectOption'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            table = layui.table,
+            commonTable = layui.commonTable,
+            common = layui.common;
+        var keyValue = $.request("keyValue");
+        common.authorizeFields('adminform');
+        var listData = [];
+        $(function () {
+            if (!!keyValue) {
+                common.ajax({
+                    url: '/PurchaseManage/PurchaseInquiry/GetFormJson',
+                    dataType: 'json',
+                    data: { keyValue: keyValue },
+                    async: false,
+                    success: function (data) {
+                        common.val('adminform', data);
+                        common.setReadOnly('adminform');
+                        listData = data.list;
+                    }
+                });
+            }
+            commonTable.rendertable({
+                elem: '#currentTableId',
+                data: listData,
+                defaultToolbar: [],
+                toolbar: '',
+                search: false,
+                limit: 9999,
+                page: { layout: ['count'] , first: false , last: false },
+                height: 'full-260',
+                filter: { clearFilter: false, },
+                cols: [[
+                    { field: 'F_MaterialCode', title: '物料编号', minWidth: 145, sort: true },
+                    { field: 'F_MaterialName', title: '物料名称', minWidth: 145, sort: true },
+                    { field: 'F_Price', title: '单价', width: 120, sort: true },
+                    { field: 'F_NeedNum', title: '数量', width: 150, sort: true },
+                ]]
+            });
+            form.render();
+        });
+        wcLoading.close();
+    });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">询价单编号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="F_InquiryCode" name="F_InquiryCode" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">供应商</label>
+                        <div class="layui-input-block">
+                            <input id="F_Supplier" name="F_Supplier" type="text" class="layui-input"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">询价日期</label>
+                        <div class="layui-input-block">
+                            <input id="F_InquiryDate" name="F_InquiryDate" type="text" class="layui-input" />
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">总金额</label>
+                        <div class="layui-input-block">
+                            <input id="F_TotalMoney" name="F_TotalMoney" type="number" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md12 layui-col-xs12">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <input id="F_Description" name="F_Description" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md12 layui-col-sm12">
+                        <label class="layui-form-label">询价明细</label>
+                        <div class="layui-input-block">
+                            <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

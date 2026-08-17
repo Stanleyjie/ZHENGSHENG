@@ -1,0 +1,62 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+using Chloe.Annotations;
+
+namespace WaterCloud.Domain.SalesManage
+{
+    /// <summary>
+    /// 创 建：超级管理员
+    /// 日 期：2026-08-15
+    /// 描 述：销售统计报表实体类（只读统计视图）
+    /// </summary>
+    [TableAttribute("mes_SalesOrder")]
+    public class SalesReportEntity : IEntity<SalesReportEntity>
+    {
+        [Column("F_Id", IsPrimaryKey = true)]
+        public string F_Id { get; set; }
+        /// <summary>
+        /// 销售订单编号
+        /// </summary>
+        public string F_SalesOrderCode { get; set; }
+        /// <summary>
+        /// 客户
+        /// </summary>
+        public string F_Customer { get; set; }
+        /// <summary>
+        /// 下单时间
+        /// </summary>
+        public DateTime? F_CreatorTime { get; set; }
+        /// <summary>
+        /// 计划开始时间
+        /// </summary>
+        public DateTime? F_PlanStartTime { get; set; }
+        /// <summary>
+        /// 计划结束时间
+        /// </summary>
+        public DateTime? F_PlanEndTime { get; set; }
+        /// <summary>
+        /// 订单数量
+        /// </summary>
+        public float? F_OrderNum { get; set; }
+        /// <summary>
+        /// 已发货数量
+        /// </summary>
+        public float? F_DeliveryNum { get; set; }
+        /// <summary>
+        /// 订单金额
+        /// </summary>
+        public float? F_OrderMoney { get; set; }
+        /// <summary>
+        /// 已收金额
+        /// </summary>
+        public float? F_ReceivedMoney { get; set; }
+        /// <summary>
+        /// 未收金额
+        /// </summary>
+        public float? F_UnreceivedMoney { get; set; }
+        /// <summary>
+        /// 是否完成
+        /// </summary>
+        public bool? F_IsFinish { get; set; }
+    }
+}

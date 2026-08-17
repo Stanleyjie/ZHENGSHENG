@@ -1,0 +1,80 @@
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'common', 'optimizeSelectOption'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            common = layui.common;
+        var keyValue = $.request("keyValue");
+        common.authorizeFields('adminform');
+        $(function () {
+            if (!!keyValue) {
+                common.ajax({
+                    url: '/PurchaseManage/PurchasePayment/GetFormJson',
+                    dataType: 'json',
+                    data: { keyValue: keyValue },
+                    async: false,
+                    success: function (data) {
+                        common.val('adminform', data);
+                        common.setReadOnly('adminform');
+                    }
+                });
+            }
+            form.render();
+        });
+        wcLoading.close();
+    });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">付款单编号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="F_PaymentCode" name="F_PaymentCode" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">供应商</label>
+                        <div class="layui-input-block">
+                            <input id="F_Supplier" name="F_Supplier" type="text" class="layui-input"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">付款日期</label>
+                        <div class="layui-input-block">
+                            <input id="F_PaymentDate" name="F_PaymentDate" type="text" class="layui-input" />
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">付款金额</label>
+                        <div class="layui-input-block">
+                            <input id="F_Amount" name="F_Amount" type="number" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">付款方式</label>
+                        <div class="layui-input-block">
+                            <input id="F_PayType" name="F_PayType" type="text" class="layui-input"/>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <input id="F_Description" name="F_Description" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

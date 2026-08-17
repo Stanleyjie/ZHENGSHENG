@@ -11,6 +11,7 @@ using WaterCloud.Domain.ClassTask;
 using WaterCloud.Service.ClassTask;
 using System.Net.Http;
 using WaterCloud.Domain.ProcessManage;
+using WaterCloud.Service.SystemSecurity;
 
 namespace WaterCloud.Service.QualityManage
 {
@@ -23,10 +24,12 @@ namespace WaterCloud.Service.QualityManage
     {
         private ItemsDataService itemsApp;
         private ControlJobService jobApp;
+        private BusinessLogService _logApp;
         public NeedCheckService(IDbContext context, IHttpClientFactory httpClientFactory) : base(context)
         {
             itemsApp = new ItemsDataService(context);
             jobApp = new ControlJobService(context, httpClientFactory);
+            _logApp = new BusinessLogService(context);
         }
         #region 获取数据
         public async Task<List<NeedCheckEntity>> GetList(string keyword = "")
@@ -760,6 +763,7 @@ namespace WaterCloud.Service.QualityManage
             if (isCommit)
             {
                 uniwork.Commit();
+                await _logApp.WriteLog(4, "质检:物料" + check.F_MaterialName + "检验数量" + (check.F_Num ?? 0), check.F_EqpName, "", check.F_MaterialName, check.F_TransferBoxCode, check.F_Num);
             }
         }
         //二次质检提交

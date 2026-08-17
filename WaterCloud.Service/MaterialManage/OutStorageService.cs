@@ -12,6 +12,7 @@ using System.Net.Http;
 using WaterCloud.Domain.QualityManage;
 using WaterCloud.Domain.ProcessManage;
 using WaterCloud.Domain.PlanManage;
+using WaterCloud.Service.SystemSecurity;
 
 namespace WaterCloud.Service.MaterialManage
 {
@@ -26,12 +27,14 @@ namespace WaterCloud.Service.MaterialManage
         private ControlJobService jobApp;
         private LocationService locationApp;
         private StorageService _storageApp;
+        private BusinessLogService _logApp;
         public OutStorageService(IDbContext context, IHttpClientFactory httpClientFactory) : base(context)
         {
             itemsApp = new ItemsDataService(context);
             jobApp = new ControlJobService(context, httpClientFactory);
             locationApp = new LocationService(context);
             _storageApp = new StorageService(context, httpClientFactory);
+            _logApp = new BusinessLogService(context);
         }
         #region 获取数据
         public async Task<List<OutStorageEntity>> GetList(string keyword = "")
@@ -689,6 +692,7 @@ namespace WaterCloud.Service.MaterialManage
                 }
             }
             uniwork.Commit();
+            await _logApp.WriteLog(3, "出库:物料" + material.F_MaterialName + "出库数量" + (entity.F_Num ?? 0), "", "", material.F_MaterialName, entity.F_TransferBoxCode, entity.F_Num);
         }
         public async Task OutStorageCancle(OutStorageInfoEntity entity)
         {

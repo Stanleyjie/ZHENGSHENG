@@ -1,0 +1,82 @@
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'common', 'optimizeSelectOption'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            common = layui.common;
+        var keyValue = $.request("keyValue");
+        common.authorizeFields('adminform');
+        $(function () {
+            if (!!keyValue) {
+                common.ajax({
+                    url: '/SalesManage/Customer/GetFormJson',
+                    dataType: 'json',
+                    data: { keyValue: keyValue },
+                    async: false,
+                    success: function (data) {
+                        common.val('adminform', data);
+                        common.setReadOnly('adminform');
+                    }
+                });
+            }
+            form.render();
+        });
+        wcLoading.close();
+    });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">客户编号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="F_CustomerCode" name="F_CustomerCode" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">客户名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="F_CustomerName" name="F_CustomerName" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">联系人</label>
+                        <div class="layui-input-block">
+                            <input id="F_Contact" name="F_Contact" type="text" class="layui-input"/>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">联系电话</label>
+                        <div class="layui-input-block">
+                            <input id="F_Phone" name="F_Phone" type="text" class="layui-input"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md12 layui-col-xs12">
+                        <label class="layui-form-label">地址</label>
+                        <div class="layui-input-block">
+                            <input id="F_Address" name="F_Address" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md12 layui-col-xs12">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <input id="F_Description" name="F_Description" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

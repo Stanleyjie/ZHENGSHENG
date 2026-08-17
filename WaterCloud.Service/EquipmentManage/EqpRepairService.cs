@@ -7,6 +7,7 @@ using Chloe;
 using WaterCloud.Domain.EquipmentManage;
 using WaterCloud.Domain.DingTalkManage;
 using WaterCloud.Service.InfoManage;
+using WaterCloud.Service.SystemSecurity;
 
 namespace WaterCloud.Service.EquipmentManage
 {
@@ -18,9 +19,11 @@ namespace WaterCloud.Service.EquipmentManage
     public class EqpRepairService : DataFilterService<EqpRepairEntity>, IDenpendency
     {
         public MessageService messageService { get; set; }
+        private BusinessLogService _logApp;
 
         public EqpRepairService(IDbContext context) : base(context)
         {
+            _logApp = new BusinessLogService(context);
         }
         #region 获取数据
         public async Task<List<EqpRepairEntity>> GetList(string keyword = "")
@@ -115,6 +118,8 @@ namespace WaterCloud.Service.EquipmentManage
                 processEntity.F_AddTime = DateTime.Now;
                 processEntity.F_ActionDesc = $"【{entity.F_CallRepairManName}】已报修，等待管理员派工或维修人员接单";
                 await uniwork.Insert<EqpRepairProcessEntity>(processEntity);
+
+                await _logApp.WriteLog(5, "设备维修:设备" + entity.F_EqpName + "报修" + entity.F_ProblemDesc, entity.F_EqpName, "", "", "", null);
 
             }
             else

@@ -1,0 +1,252 @@
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+ <div class="layuimini-container">
+     <div class="layuimini-main">
+         <fieldset class="table-search-fieldset layui-hide" id="searchField">
+             <div>
+                 <form class="layui-form layui-form-pane" >
+                     <div class="layui-form-item">
+                         <div class="layui-inline">
+                             <label class="layui-form-label">关键字:</label>
+                             <div class="layui-input-inline">
+                                 <input type="text" id="txt_keyword" name="txt_keyword" autocomplete="off" class="layui-input" >
+                             </div>
+                         </div>
+                        <div class="layui-inline"> 
+                             <button type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+                         </div>
+                     </div>
+                 </form>
+             </div>
+         </fieldset>
+         <script type="text/html" id="toolbarDemo">
+             <div class="layui-btn-container" id="toolbar">
+                 <button id="NF-add" name="NF-add" authorize class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe654;</i>新增</button>
+                 <button id="NF-edit" name="NF-edit" authorize class="layui-btn layui-btn-sm layui-btn-warm layui-hide" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</button>
+                 <button id="NF-delete" name="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger layui-hide" lay-event="delete"> <i class="layui-icon">&#xe640;</i>删除</button>
+                 <button id="NF-enabled" name="NF-enabled" authorize="yes" class="layui-btn layui-btn-sm data-enabled-btn layui-hide" lay-event="enabled"> <i class="fa fa-play-circle"></i>启用</button>
+                 <button id="NF-over" name="NF-enabled" authorize="yes" class="layui-btn layui-btn-sm layui-btn-danger layui-hide" lay-event="over"> <i class="layui-icon">&#x1007;</i>结案</button>
+                 <button id="NF-details" name="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal layui-hide" lay-event="details"> <i class="layui-icon">&#xe60b;</i>查看</button>
+             </div>
+         </script>
+         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+         <script type="text/html" id="currentTableBar">
+             <a id="NF-edit" authorize class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
+             <a id="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete"><i class="layui-icon">&#xe640;</i></a>
+             <a id="NF-enabled" authorize class="layui-btn layui-btn-sm" lay-event="enabled"><i class="fa fa-play-circle"></i></a>
+             <a id="NF-over" authorize class="layui-btn layui-btn-sm layui-btn-danger" lay-event="over"><i class="layui-icon">&#x1007;</i></a>
+             <a id="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal" lay-event="details"><i class="layui-icon">&#xe60b;</i></a>
+         </script>
+     </div>
+ </div>
+ <script>
+     layui.use(['jquery', 'form','table','commonTable', 'common','optimizeSelectOption'], function () {
+         var $ = layui.jquery,
+             form = layui.form,
+             table = layui.table,commonTable = layui.commonTable
+             common = layui.common;
+         //权限控制(js是值传递)
+         currentTableBar.innerHTML = common.authorizeButtonNew(currentTableBar.innerHTML);
+         toolbarDemo.innerHTML = common.authorizeButtonNew(toolbarDemo.innerHTML);
+         commonTable.rendertable({
+             elem: '#currentTableId',
+             id: 'currentTableId',
+             url: '/PurchaseManage/PurchaseOrder/GetGridJson',
+             cols: [[
+                 { type: "radio", width: 50 },
+                 { field: 'F_PurchaseOrderCode', title: '采购订单编号', width: 170,sort: true,filter: true },
+                 { field: 'F_Supplier', title: '供应商', width: 100,sort: true,filter: true },
+                 { field: 'F_PlanStartTime', title: '计划开始时间', width: 160, sort: true, filter: { type: 'date[yyyy/MM/dd HH:mm:ss]' } },
+                 { field: 'F_PlanEndTime', title: '计划结束时间', width: 160, sort: true, filter: { type: 'date[yyyy/MM/dd HH:mm:ss]' } },
+                 {
+                     field: 'F_IsFinish', title: '完成', width: 80, sort: true, filter: true,
+                     templet: function (d) {
+                         if (d.F_IsFinish == true) {
+                             return "<span class='layui-btn layui-btn-normal layui-btn-xs'>是</span>";
+                         } else {
+                             return "<span class='layui-btn layui-btn-warm layui-btn-xs'>否</span>";
+                         }
+                     }
+                 },
+                 { field: 'F_ActualOverTime', title: '实际结束时间', width: 160, sort: true, filter: { type: 'date[yyyy/MM/dd HH:mm:ss]' } },
+                 { field: 'F_DayNum', title: '天数', width: 90, sort: true, filter: true },
+                 { field: 'F_NeedNum', title: '需求数量', width: 120,sort: true,filter: true },
+                 { field: 'F_TotalMoney', title: '总金额', width: 120,sort: true,filter: true },
+                 {
+                     field: 'F_CreatorTime', title: '创建时间', width: 160, sort: true, filter: { type: 'date[yyyy/MM/dd HH:mm:ss]' }
+                 },
+                 {
+                     field: 'F_EnabledMark', title: '启用', width: 80, sort: true, filter: true,
+                     templet: function (d) {
+                         if (d.F_EnabledMark == true) {
+                             return "<span class='layui-btn layui-btn-normal layui-btn-xs'>是</span>";
+                         } else {
+                             return "<span class='layui-btn layui-btn-warm layui-btn-xs'>否</span>";
+                         }
+                     }
+                 },
+                 { field: 'F_Description', title: '订单说明', minWidth: 120, filter: true },
+                { title: '操作', width: 270, toolbar: '#currentTableBar', align: "center" }
+             ]]
+         });
+         // 监听搜索操作
+         form.on('submit(data-search-btn)', function (data) {
+             //执行搜索重载
+             commonTable.reloadtable({
+                 elem: 'currentTableId',
+                 curr: 1,
+                 where: { keyword: data.field.txt_keyword}
+             });
+             return false;
+         });
+         wcLoading.close();
+         //行点击事件监听，控制按钮显示
+         var oneList = ["NF-edit", "NF-details", "NF-delete","NF-enabled"];//选择1条显示
+         commonTable.tableRowClick("radio", "currentTableFilter", "currentTableId", oneList);
+         //toolbar监听事件
+         table.on('toolbar(currentTableFilter)', function (obj) { 
+             var data = table.checkStatus('currentTableId').data;
+             var id = data.length > 0 ? data[0].F_Id : null;
+             if (obj.event === 'add') {  // 监听添加操作
+                 common.modalOpen({
+                     title: "添加界面",
+                     url: "/PurchaseManage/PurchaseOrder/Form",
+                     width: "780px",
+                     height: "650px",
+                 });
+             } 
+             else if (obj.event === 'delete') {
+                if (data.length == 0) {
+                     common.modalMsg("未选中数据", "warning");
+                     return false;
+                 }
+                var ids = [];
+                for (var i = 0; i < data.length; i++) {
+                    ids.push(data[i].F_Id);
+                }
+                 common.deleteForm({
+                     url: "/PurchaseManage/PurchaseOrder/DeleteForm",
+                     param: { keyValue: ids.join(',') },
+                     success: function () {
+                         common.reload('data-search-btn');
+                   }
+               });
+             }
+             else if (obj.event === 'over') {
+                 if (data.length == 0) {
+                     common.modalMsg("未选中数据", "warning");
+                     return false;
+                 }
+                 common.submitPost({
+                     prompt: "注：您确定要【结案】该项订单吗？",
+                     url: "/PurchaseManage/PurchaseOrder/OverForm",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                     }
+                 });
+             }
+           else if (obj.event === 'edit') {
+                if (data.length == 0) {
+                   common.modalMsg("未选中数据", "warning");
+                   return false;
+               }
+               common.modalOpen({
+                  title: "编辑界面",
+                   url: "/PurchaseManage/PurchaseOrder/Form?keyValue=" + id,
+                   width: "780px",
+                   height: "650px",
+               });
+           }
+           else if (obj.event === 'details') {
+                if (data.length == 0) {
+                   common.modalMsg("未选中数据", "warning");
+                   return false;
+               }
+               common.modalOpen({
+                  title: "查看界面",
+                   url: "/PurchaseManage/PurchaseOrder/Details?keyValue=" +  id,
+                   width: "780px",
+                   height: "650px",
+                  btn: []
+               });
+             }
+             else if (obj.event === 'enabled') {
+                 if (data.length == 0) {
+                     common.modalMsg("未选中数据", "warning");
+                     return false;
+                 }
+                 common.submitPost({
+                     prompt: "注：您确定要【启动】该项单据吗？",
+                     url: "/PurchaseManage/PurchaseOrder/EnabledForm",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                     }
+                 });
+             }
+           else if (obj.event === 'TABLE_SEARCH') {
+                var _that = $("#searchField");
+                if (_that.hasClass("layui-hide")) {
+                   _that.removeClass('layui-hide');
+                } else {
+                   _that.addClass('layui-hide');
+                }
+           }
+           return false;
+       });
+        //toolrow监听事件
+        table.on('tool(currentTableFilter)', function (obj) {
+             var id = obj.data.F_Id;
+            if (obj.event === 'delete') {
+                common.deleteForm({
+                     url: "/PurchaseManage/PurchaseOrder/DeleteForm",
+                     param: { keyValue: obj.data.F_Id },
+                     success: function () {
+                        obj.del();
+                   }
+               });
+            }
+            else if (obj.event === 'edit') {
+               common.modalOpen({
+                  title: "编辑界面",
+                   url: "/PurchaseManage/PurchaseOrder/Form?keyValue=" + id,
+                   width: "780px",
+                   height: "650px",
+               });
+            }
+            else if (obj.event === 'enabled') {
+                common.submitPost({
+                    prompt: "注：您确定要【启动】该项单据吗？",
+                    url: "/PurchaseManage/PurchaseOrder/EnabledForm",
+                    param: { keyValue: id },
+                    success: function () {
+                        common.reload('data-search-btn');
+                    }
+                });
+            }
+            else if (obj.event === 'over') {
+                common.submitPost({
+                    prompt: "注：您确定要【结案】该项订单吗？",
+                    url: "/PurchaseManage/PurchaseOrder/OverForm",
+                    param: { keyValue: id },
+                    success: function () {
+                        common.reload('data-search-btn');
+                    }
+                });
+            }
+            else if (obj.event === 'details') {
+                common.modalOpen({
+                    title: "查看界面",
+                    url: "/PurchaseManage/PurchaseOrder/Details?keyValue=" + id,
+                    width: "780px",
+                    height: "650px",
+                    btn: []
+                });
+            }
+            return false;
+        });
+   });
+</script>

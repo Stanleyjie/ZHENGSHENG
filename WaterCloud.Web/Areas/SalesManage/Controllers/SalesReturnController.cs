@@ -1,0 +1,97 @@
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using WaterCloud.Code;
+using WaterCloud.Domain.SalesManage;
+using WaterCloud.Service;
+using WaterCloud.Service.SalesManage;
+
+namespace WaterCloud.Web.Areas.SalesManage.Controllers
+{
+    /// <summary>
+    /// 创 建：超级管理员
+    /// 日 期：2026-08-15
+    /// 描 述：销售退货单控制器类
+    /// </summary>
+    [Area("SalesManage")]
+    public class SalesReturnController : BaseController
+    {
+        public SalesReturnService _service { get; set; }
+        #region 获取数据
+        [HandlerAjaxOnly]
+        [IgnoreAntiforgeryToken]
+        public async Task<ActionResult> GetGridJson(SoulPage<SalesReturnEntity> pagination, string keyword)
+        {
+            if (string.IsNullOrEmpty(pagination.field))
+            {
+                pagination.field = "F_CreatorTime";
+                pagination.order = "desc";
+            }
+            var data = await _service.GetLookList(pagination, keyword);
+            return Content(pagination.setData(data).ToJson());
+        }
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetMaterialListJson(string keyword)
+        {
+            var data = await _service.GetMaterialList(keyword);
+            return Content(data.ToJson());
+        }
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetOrderListJson(string keyword)
+        {
+            var data = await _service.GetOrderList(keyword);
+            return Content(data.ToJson());
+        }
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetFormJson(string keyValue)
+        {
+            var data = await _service.GetLookForm(keyValue);
+            return Content(data.ToJson());
+        }
+        #endregion
+
+        [HttpGet]
+        public virtual ActionResult AddForm()
+        {
+            return View();
+        }
+
+        #region 提交数据
+        [HttpPost]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> SubmitForm(SalesReturnEntity entity, string keyValue)
+        {
+            try
+            {
+                await _service.SubmitForm(entity, keyValue);
+                return await Success("操作成功。", "", keyValue);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue);
+            }
+        }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ServiceFilter(typeof(HandlerAuthorizeAttribute))]
+        public async Task<ActionResult> DeleteForm(string keyValue)
+        {
+            try
+            {
+                await _service.DeleteForm(keyValue);
+                return await Success("操作成功。", "", keyValue, DbLogType.Delete);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue, DbLogType.Delete);
+            }
+        }
+        #endregion
+    }
+}

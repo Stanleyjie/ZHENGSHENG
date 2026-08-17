@@ -16048,3 +16048,888 @@ GO
 INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'08d9a4b8-24a5-4b3e-8682-169a9ab29c05', N'39226710-b665-489e-aaa0-a8c15d29ed4c', N'0', N'1', N'NF-delete', N'删除', NULL, N'1', N'delete', N'/MaterialManage/BomInfo/DeleteForm', NULL, N'0', N'0', N'0', N'2', N'0', N'1', N'', N'2021-11-11 10:08:25.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'')
 GO
 
+-- ----------------------------
+-- Table structure for mes_SalesOrder
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesOrder]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesOrder]
+GO
+
+CREATE TABLE [dbo].[mes_SalesOrder] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_SalesOrderCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_Customer] nvarchar(50) COLLATE Chinese_PRC_CI_AS DEFAULT 0 NOT NULL,
+  [F_PlanStartTime] datetime2(7)  NOT NULL,
+  [F_PlanEndTime] datetime2(7)  NOT NULL,
+  [F_DayNum] int  NOT NULL,
+  [F_TotalMoney] float(53)  NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_CreatorTime] datetime2(7)  NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_LastModifyTime] datetime2(7)  NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_DeleteTime] datetime2(7)  NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_IsFinish] tinyint  NOT NULL,
+  [F_PredictOverTime] datetime2(7)  NULL,
+  [F_ActualOverTime] datetime2(7)  NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+
+ALTER TABLE [dbo].[mes_SalesOrder] SET (LOCK_ESCALATION = TABLE)
+GO
+
+-- ----------------------------
+-- Table structure for mes_SalesOrderDetail
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesOrderDetail]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesOrderDetail]
+GO
+
+CREATE TABLE [dbo].[mes_SalesOrderDetail] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_SalesOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_MaterialId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_NeedNum] float(53) DEFAULT 0 NOT NULL,
+  [F_Price] float(53) DEFAULT 0 NOT NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+
+ALTER TABLE [dbo].[mes_SalesOrderDetail] SET (LOCK_ESCALATION = TABLE)
+GO
+
+-- ----------------------------
+-- Table structure for mes_PurchaseOrder
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchaseOrder]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchaseOrder]
+GO
+
+CREATE TABLE [dbo].[mes_PurchaseOrder] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_PurchaseOrderCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_Supplier] nvarchar(50) COLLATE Chinese_PRC_CI_AS DEFAULT 0 NOT NULL,
+  [F_PlanStartTime] datetime2(7)  NOT NULL,
+  [F_PlanEndTime] datetime2(7)  NOT NULL,
+  [F_DayNum] int  NOT NULL,
+  [F_TotalMoney] float(53)  NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_CreatorTime] datetime2(7)  NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_LastModifyTime] datetime2(7)  NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_DeleteTime] datetime2(7)  NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_IsFinish] tinyint  NOT NULL,
+  [F_PredictOverTime] datetime2(7)  NULL,
+  [F_ActualOverTime] datetime2(7)  NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+
+ALTER TABLE [dbo].[mes_PurchaseOrder] SET (LOCK_ESCALATION = TABLE)
+GO
+
+-- ----------------------------
+-- Table structure for mes_PurchaseOrderDetail
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchaseOrderDetail]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchaseOrderDetail]
+GO
+
+CREATE TABLE [dbo].[mes_PurchaseOrderDetail] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_PurchaseOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_MaterialId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_NeedNum] float(53) DEFAULT 0 NOT NULL,
+  [F_Price] float(53) DEFAULT 0 NOT NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+
+ALTER TABLE [dbo].[mes_PurchaseOrderDetail] SET (LOCK_ESCALATION = TABLE)
+GO
+
+-- ----------------------------
+-- Module: 销售管理 / 采购管理
+-- ----------------------------
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'A1C0D965-8E51-478A-BC0E-0DB733AF3216', N'd5be1a41-547d-4001-8ae7-f6568e4d6cfe', N'2', N'SalesManage', N'销售管理', N'fa fa-shopping-bag', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'97', N'0', N'1', N'', N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'A1C0D965-8E51-478A-BC0E-0DB733AF3216', N'3', N'SalesOrder', N'销售订单', N'fa fa-list-alt', N'/SalesManage/SalesOrder/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'7262A88F-317C-47F7-9953-38490B0398C7', N'd5be1a41-547d-4001-8ae7-f6568e4d6cfe', N'2', N'PurchaseManage', N'采购管理', N'fa fa-truck', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'99', N'0', N'1', N'', N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'7262A88F-317C-47F7-9953-38490B0398C7', N'3', N'PurchaseOrder', N'采购订单', N'fa fa-list-alt', N'/PurchaseManage/PurchaseOrder/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+
+-- ----------------------------
+-- ModuleButton: 销售订单
+-- ----------------------------
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'0B2BBD4A-25B6-4452-81DE-AFF9D88F0461', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/SalesManage/SalesOrder/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'2FD9622C-1E67-4DCE-8D41-6643B5D03E09', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/SalesManage/SalesOrder/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'9F353E2D-E0E5-4D14-9DB3-2D0A2AEBA712', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/SalesManage/SalesOrder/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'8D74C3E7-F66A-498F-94BE-E2077AB73EBC', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/SalesManage/SalesOrder/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'3944048F-971D-4723-B304-BB010336F179', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'0', N'1', N'NF-enabled', N'启用', NULL, N'2', N'enabled', N'/SalesManage/SalesOrder/EnabledForm', N'0', N'0', N'0', N'0', N'4', N'0', N'1', N'', N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'')
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'4FBD5AC2-FAD3-4CCA-BA60-EFAC1E3DCA28', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'0', N'1', N'NF-over', N'结案', NULL, N'1', N'over', N'/SalesManage/SalesOrder/OverForm', NULL, N'0', N'0', N'0', N'5', N'0', N'1', N'', N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'')
+GO
+
+-- ----------------------------
+-- ModuleButton: 采购订单
+-- ----------------------------
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'09A63590-287F-4CF6-B905-32F7EFC0FD53', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/PurchaseManage/PurchaseOrder/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'A9D84F73-D2CB-4327-A679-6C30CF9B17ED', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/PurchaseManage/PurchaseOrder/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'5F9432B2-F8A4-4945-A04E-A10DD0FEC933', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/PurchaseManage/PurchaseOrder/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'0F4CCDCE-07AC-4CCD-8736-4D215ADC4E47', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/PurchaseManage/PurchaseOrder/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'A7FC151C-0BF2-4894-8851-D0419F513F31', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'0', N'1', N'NF-enabled', N'启用', NULL, N'2', N'enabled', N'/PurchaseManage/PurchaseOrder/EnabledForm', N'0', N'0', N'0', N'0', N'4', N'0', N'1', N'', N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'')
+GO
+
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'8F2B0C2C-504C-471E-BA01-389272D7D320', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'0', N'1', N'NF-over', N'结案', NULL, N'1', N'over', N'/PurchaseManage/PurchaseOrder/OverForm', NULL, N'0', N'0', N'0', N'5', N'0', N'1', N'', N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'')
+GO
+
+-- ----------------------------
+-- ModuleFields: 销售订单
+-- ----------------------------
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'6635DE16-2084-4F33-AC10-DA1F6F41135A', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_SalesOrderCode', N'销售订单编号', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'33D0F49B-85A3-48A3-9F1B-64465822E179', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_Customer', N'客户', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'24DF6561-6498-48B4-AE1B-2ED4E00569F2', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_PlanStartTime', N'计划开始时间', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'BE88AF24-ED43-42CE-BA1C-2B45011BE8AF', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_PlanEndTime', N'计划结束时间', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'1B39B306-705D-4A90-983C-7A7D5C84E008', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_DayNum', N'天数', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'4C09DED6-DCC9-4FD5-8EE2-F66F76052E7C', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_EnabledMark', N'F_EnabledMark', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'01B09A21-2E5C-489E-B186-4AE74571FF5E', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_TotalMoney', N'总金额', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'D702BEBE-F4CA-4BAA-83E2-901F2E1F4506', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_Description', N'备注', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'1A36BCFA-6826-4F21-9E6B-2ECC5AC3A4DB', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_CreatorTime', N'F_CreatorTime', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'E3E5FA5A-A17B-40A3-A87B-11A44D7BEE1D', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'F_CreatorUserId', N'F_CreatorUserId', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+
+-- ----------------------------
+-- ModuleFields: 采购订单
+-- ----------------------------
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'2614CA03-A3C7-457B-A587-09FF2D38FDAB', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_PurchaseOrderCode', N'采购订单编号', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'C24FC470-1747-4F76-BC3A-30B9D1AA9C1B', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_Supplier', N'供应商', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'EAFAB8C1-0DB0-495F-AA1D-C0F49341FA5C', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_PlanStartTime', N'计划开始时间', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'15F5B346-14ED-4964-8EEE-6D97C51EB12A', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_PlanEndTime', N'计划结束时间', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'2131A3F4-9151-4053-8089-515643826485', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_DayNum', N'天数', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'89B00F6C-3778-4F2D-A443-60DB0B91E67B', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_EnabledMark', N'F_EnabledMark', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'EAA06CCA-C392-48D7-BC24-62C546B32A56', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_TotalMoney', N'总金额', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'CD4FE6AD-6EB6-4D4B-8610-F37DDE9298BC', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_Description', N'备注', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'553F6810-4585-4C84-B33C-7F7186361877', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_CreatorTime', N'F_CreatorTime', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+INSERT INTO [dbo].[sys_ModuleFields] ([F_Id], [F_ModuleId], [F_EnCode], [F_FullName], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsPublic]) VALUES (N'678417BF-4427-4D19-9221-121AD18B3E3A', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'F_CreatorUserId', N'F_CreatorUserId', N'0', N'1', NULL, N'2026-08-14 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'1')
+GO
+
+-- ----------------------------
+-- RoleAuthorize: 管理员角色授权（销售管理/采购管理）
+-- ----------------------------
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'A05BBE3F-EB9E-4CE9-856C-2921856B18CF', N'1', N'A1C0D965-8E51-478A-BC0E-0DB733AF3216', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'76336D40-4443-4CAE-B74A-1B415EF479E5', N'1', N'2F5C7582-9002-46B8-86FA-8616E6B23304', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'0601092E-83DC-4EC2-B3E4-53C27C332235', N'1', N'7262A88F-317C-47F7-9953-38490B0398C7', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'63FBA96D-5D4A-435D-9D44-A50C995DDADA', N'1', N'E351BD20-5974-417B-83F6-9F07DF2312BC', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'81C9E7F2-90CE-4EFD-8D2C-1910168D06C7', N'2', N'0B2BBD4A-25B6-4452-81DE-AFF9D88F0461', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'6565C86C-293E-4AB6-AEFD-F4A60119D381', N'2', N'2FD9622C-1E67-4DCE-8D41-6643B5D03E09', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'F2FC0D9E-D6DA-4009-8578-9FD3B2653E32', N'2', N'9F353E2D-E0E5-4D14-9DB3-2D0A2AEBA712', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'3FA92CFC-B8B1-410F-92CC-D0927267B773', N'2', N'8D74C3E7-F66A-498F-94BE-E2077AB73EBC', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'025ED249-130E-442A-B015-A46F05D5D0CD', N'2', N'3944048F-971D-4723-B304-BB010336F179', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'4D4C88FC-7DB5-4600-B3A4-40D749B748C2', N'2', N'4FBD5AC2-FAD3-4CCA-BA60-EFAC1E3DCA28', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'979E3BE0-CBCB-4BE8-BB64-75526EB0DA37', N'2', N'09A63590-287F-4CF6-B905-32F7EFC0FD53', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'81484110-E830-47C4-8044-8DCCC1FBB32C', N'2', N'A9D84F73-D2CB-4327-A679-6C30CF9B17ED', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'D5B2435D-0D66-4AF2-90B8-44FD1AAEB4BA', N'2', N'5F9432B2-F8A4-4945-A04E-A10DD0FEC933', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'AA9F15A2-3347-4C29-9269-5A79A28C01F0', N'2', N'0F4CCDCE-07AC-4CCD-8736-4D215ADC4E47', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'59B2F8B0-FC2B-48B8-A497-139647797953', N'2', N'A7FC151C-0BF2-4894-8851-D0419F513F31', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'2670F202-1CED-412C-8A72-187DB301164B', N'2', N'8F2B0C2C-504C-471E-BA01-389272D7D320', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+
+-- ----------------------------
+-- Table structure for mes_EqpUserBanding
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_EqpUserBanding]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_EqpUserBanding]
+GO
+
+CREATE TABLE [dbo].[mes_EqpUserBanding] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_EqpId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  [F_UserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NOT NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+
+ALTER TABLE [dbo].[mes_EqpUserBanding] SET (LOCK_ESCALATION = TABLE)
+GO
+
+
+
+-- ============================================
+-- 销售管理 / 采购管理 扩展：建表
+-- ============================================
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesCustomer]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesCustomer]
+GO
+CREATE TABLE [dbo].[mes_SalesCustomer] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_CustomerCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_CustomerName] nvarchar(200) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_Contact] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Phone] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Address] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_SalesCustomer] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchaseSupplier]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchaseSupplier]
+GO
+CREATE TABLE [dbo].[mes_PurchaseSupplier] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_SupplierCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_SupplierName] nvarchar(200) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_Contact] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Phone] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Address] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_PurchaseSupplier] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesQuote]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesQuote]
+GO
+CREATE TABLE [dbo].[mes_SalesQuote] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_QuoteCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_Customer] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_QuoteDate] datetime2(7) NOT NULL,
+  [F_TotalMoney] float(53) NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_SalesQuote] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesQuoteDetail]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesQuoteDetail]
+GO
+CREATE TABLE [dbo].[mes_SalesQuoteDetail] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_QuoteId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_MaterialId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_NeedNum] float(53) DEFAULT 0 NOT NULL,
+  [F_Price] float(53) DEFAULT 0 NOT NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_SalesQuoteDetail] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesDelivery]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesDelivery]
+GO
+CREATE TABLE [dbo].[mes_SalesDelivery] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_DeliveryCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_SalesOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Customer] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeliveryDate] datetime2(7) NOT NULL,
+  [F_TotalMoney] float(53) NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_SalesDelivery] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesDeliveryDetail]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesDeliveryDetail]
+GO
+CREATE TABLE [dbo].[mes_SalesDeliveryDetail] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_DeliveryId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_MaterialId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_NeedNum] float(53) DEFAULT 0 NOT NULL,
+  [F_Price] float(53) DEFAULT 0 NOT NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_SalesDeliveryDetail] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesReturn]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesReturn]
+GO
+CREATE TABLE [dbo].[mes_SalesReturn] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_ReturnCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_SalesOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Customer] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_ReturnDate] datetime2(7) NOT NULL,
+  [F_TotalMoney] float(53) NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_SalesReturn] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesReturnDetail]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesReturnDetail]
+GO
+CREATE TABLE [dbo].[mes_SalesReturnDetail] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_ReturnId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_MaterialId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_NeedNum] float(53) DEFAULT 0 NOT NULL,
+  [F_Price] float(53) DEFAULT 0 NOT NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_SalesReturnDetail] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_SalesReceipt]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_SalesReceipt]
+GO
+CREATE TABLE [dbo].[mes_SalesReceipt] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_ReceiptCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_SalesOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Customer] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_ReceiptDate] datetime2(7) NOT NULL,
+  [F_Amount] float(53) DEFAULT 0 NOT NULL,
+  [F_PayType] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_SalesReceipt] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchaseInquiry]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchaseInquiry]
+GO
+CREATE TABLE [dbo].[mes_PurchaseInquiry] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_InquiryCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_Supplier] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_InquiryDate] datetime2(7) NOT NULL,
+  [F_TotalMoney] float(53) NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_PurchaseInquiry] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchaseInquiryDetail]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchaseInquiryDetail]
+GO
+CREATE TABLE [dbo].[mes_PurchaseInquiryDetail] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_InquiryId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_MaterialId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_NeedNum] float(53) DEFAULT 0 NOT NULL,
+  [F_Price] float(53) DEFAULT 0 NOT NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_PurchaseInquiryDetail] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchaseReceive]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchaseReceive]
+GO
+CREATE TABLE [dbo].[mes_PurchaseReceive] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_ReceiveCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_PurchaseOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Supplier] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_ReceiveDate] datetime2(7) NOT NULL,
+  [F_TotalMoney] float(53) NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_PurchaseReceive] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchaseReceiveDetail]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchaseReceiveDetail]
+GO
+CREATE TABLE [dbo].[mes_PurchaseReceiveDetail] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_ReceiveId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_MaterialId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_NeedNum] float(53) DEFAULT 0 NOT NULL,
+  [F_Price] float(53) DEFAULT 0 NOT NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_PurchaseReceiveDetail] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchaseReturn]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchaseReturn]
+GO
+CREATE TABLE [dbo].[mes_PurchaseReturn] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_ReturnCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_PurchaseOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Supplier] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_ReturnDate] datetime2(7) NOT NULL,
+  [F_TotalMoney] float(53) NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_PurchaseReturn] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchaseReturnDetail]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchaseReturnDetail]
+GO
+CREATE TABLE [dbo].[mes_PurchaseReturnDetail] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_ReturnId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_MaterialId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_NeedNum] float(53) DEFAULT 0 NOT NULL,
+  [F_Price] float(53) DEFAULT 0 NOT NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_PurchaseReturnDetail] SET (LOCK_ESCALATION = TABLE)
+GO
+
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[mes_PurchasePayment]') AND type IN ('U'))
+	DROP TABLE [dbo].[mes_PurchasePayment]
+GO
+CREATE TABLE [dbo].[mes_PurchasePayment] (
+  [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_PaymentCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
+  [F_PurchaseOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_Supplier] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_PaymentDate] datetime2(7) NOT NULL,
+  [F_Amount] float(53) DEFAULT 0 NOT NULL,
+  [F_PayType] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
+  [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_CreatorTime] datetime2(7) NULL,
+  [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_LastModifyTime] datetime2(7) NULL,
+  [F_LastModifyUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeleteTime] datetime2(7) NULL,
+  [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  PRIMARY KEY CLUSTERED ([F_Id])
+)
+GO
+ALTER TABLE [dbo].[mes_PurchasePayment] SET (LOCK_ESCALATION = TABLE)
+GO
+
+
+-- ============================================
+-- 销售管理 / 采购管理 扩展：分组菜单 + 页面菜单
+-- ============================================
+-- 销售管理子分组
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'EF8638F2-4BB1-40DB-9833-C8577A5C1FC1', N'A1C0D965-8E51-478A-BC0E-0DB733AF3216', N'3', N'SalesBase', N'基础资料', N'fa fa-database', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'2517C69D-8C1E-48C7-8452-528A8441174C', N'A1C0D965-8E51-478A-BC0E-0DB733AF3216', N'3', N'SalesBusiness', N'销售业务', N'fa fa-shopping-bag', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'2', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'E606C53D-95CE-4BC4-9025-8991D3632B27', N'A1C0D965-8E51-478A-BC0E-0DB733AF3216', N'3', N'SalesMoney', N'资金管理', N'fa fa-money', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'3', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'F91F7E02-6F35-4217-9A50-2F4A56164509', N'A1C0D965-8E51-478A-BC0E-0DB733AF3216', N'3', N'SalesReportGroup', N'统计报表', N'fa fa-bar-chart', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'4', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+-- 采购管理子分组
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'D5C2F359-6705-4151-B062-0191B38F9B23', N'7262A88F-317C-47F7-9953-38490B0398C7', N'3', N'PurchaseBase', N'基础资料', N'fa fa-database', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'A5E310B1-8BFB-4A92-8B14-E4823CE1D001', N'7262A88F-317C-47F7-9953-38490B0398C7', N'3', N'PurchaseBusiness', N'采购业务', N'fa fa-truck', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'2', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'42F30A72-C965-4DE4-9272-EC1F6D7F5F66', N'7262A88F-317C-47F7-9953-38490B0398C7', N'3', N'PurchaseMoney', N'资金管理', N'fa fa-money', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'3', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'17C91484-056B-4552-8F1E-56C52EC84B89', N'7262A88F-317C-47F7-9953-38490B0398C7', N'3', N'PurchaseReportGroup', N'统计报表', N'fa fa-bar-chart', NULL, N'expand', N'1', N'1', N'0', N'0', N'0', N'0', N'4', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+-- 销售页面
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'59EF09E6-6FC4-4579-B7B5-DF379EB3217E', N'EF8638F2-4BB1-40DB-9833-C8577A5C1FC1', N'4', N'Customer', N'客户管理', N'fa fa-users', N'/SalesManage/Customer/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'D4888C71-0632-4310-885E-57E99F664885', N'2517C69D-8C1E-48C7-8452-528A8441174C', N'4', N'SalesQuote', N'销售报价单', N'fa fa-file-text-o', N'/SalesManage/SalesQuote/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'8B6507F4-CB60-48B3-AF7E-4429C5789367', N'2517C69D-8C1E-48C7-8452-528A8441174C', N'4', N'SalesDelivery', N'销售发货单', N'fa fa-truck', N'/SalesManage/SalesDelivery/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'3', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'7F002EAD-1B94-4C7E-87E9-9AF3F8896656', N'2517C69D-8C1E-48C7-8452-528A8441174C', N'4', N'SalesReturn', N'销售退货单', N'fa fa-undo', N'/SalesManage/SalesReturn/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'4', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'6FDCD8E8-C26D-4C5F-BBB0-A4024CB35D13', N'E606C53D-95CE-4BC4-9025-8991D3632B27', N'4', N'SalesReceipt', N'销售收款', N'fa fa-money', N'/SalesManage/SalesReceipt/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'2AAC38F0-DB62-40FD-88CD-8ABCC68BAD97', N'F91F7E02-6F35-4217-9A50-2F4A56164509', N'4', N'SalesReport', N'销售统计', N'fa fa-line-chart', N'/SalesManage/SalesReport/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+-- 采购页面
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'5C9FD769-6081-402A-B1FF-8C59207AF24F', N'D5C2F359-6705-4151-B062-0191B38F9B23', N'4', N'Supplier', N'供应商管理', N'fa fa-users', N'/PurchaseManage/Supplier/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'6AED7A89-EB85-41F9-A292-4247257086F8', N'A5E310B1-8BFB-4A92-8B14-E4823CE1D001', N'4', N'PurchaseInquiry', N'采购询价单', N'fa fa-file-text-o', N'/PurchaseManage/PurchaseInquiry/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'6763A41B-9308-4CF7-8C57-5A81B9C37275', N'A5E310B1-8BFB-4A92-8B14-E4823CE1D001', N'4', N'PurchaseReceive', N'采购收货单', N'fa fa-sign-in', N'/PurchaseManage/PurchaseReceive/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'3', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'7212244A-A45A-40F4-B59A-2E0F4CDBD039', N'A5E310B1-8BFB-4A92-8B14-E4823CE1D001', N'4', N'PurchaseReturn', N'采购退货单', N'fa fa-undo', N'/PurchaseManage/PurchaseReturn/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'4', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'560F7C48-E85E-4693-89F6-AFC2A77D47A2', N'42F30A72-C965-4DE4-9272-EC1F6D7F5F66', N'4', N'PurchasePayment', N'采购付款', N'fa fa-money', N'/PurchaseManage/PurchasePayment/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+INSERT INTO [dbo].[sys_Module] ([F_Id], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_UrlAddress], [F_Target], [F_IsMenu], [F_IsExpand], [F_IsFields], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_IsBoard], [F_Authorize]) VALUES (N'B74EC7F9-170A-4C4E-A1FA-9FCCE358B03D', N'17C91484-056B-4552-8F1E-56C52EC84B89', N'4', N'PurchaseReport', N'采购统计', N'fa fa-line-chart', N'/PurchaseManage/PurchaseReport/Index', N'iframe', N'1', N'0', N'0', N'0', N'0', N'0', N'1', N'0', N'1', N'', N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, N'0', N'')
+GO
+-- 重挂已有订单菜单到业务分组
+UPDATE [dbo].[sys_Module] SET [F_ParentId]=N'2517C69D-8C1E-48C7-8452-528A8441174C', [F_Layers]=N'4', [F_SortCode]=N'2' WHERE [F_Id]=N'2F5C7582-9002-46B8-86FA-8616E6B23304'
+GO
+UPDATE [dbo].[sys_Module] SET [F_ParentId]=N'A5E310B1-8BFB-4A92-8B14-E4823CE1D001', [F_Layers]=N'4', [F_SortCode]=N'2' WHERE [F_Id]=N'E351BD20-5974-417B-83F6-9F07DF2312BC'
+GO
+
+
+-- ============================================
+-- 销售管理 / 采购管理 扩展：按钮 + 角色授权
+-- ============================================
+-- 客户管理 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'CD6AB6D2-644B-4F7C-B9C9-AC8E75FF2DB9', N'59EF09E6-6FC4-4579-B7B5-DF379EB3217E', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/SalesManage/Customer/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'D344626E-601B-4E8C-B11A-A0B3ED4FFAFD', N'59EF09E6-6FC4-4579-B7B5-DF379EB3217E', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/SalesManage/Customer/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'9FC7A148-7752-45EC-8E5A-DE5261D5CEEE', N'59EF09E6-6FC4-4579-B7B5-DF379EB3217E', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/SalesManage/Customer/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'5DE9EE5A-E6D5-4C35-8EB3-7899161F79B3', N'59EF09E6-6FC4-4579-B7B5-DF379EB3217E', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/SalesManage/Customer/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+-- 销售报价单 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'B4694DB7-ECAA-41B4-9B5F-B1BB5824E19B', N'D4888C71-0632-4310-885E-57E99F664885', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/SalesManage/SalesQuote/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'2C703E59-2A8D-41DC-843C-210AB01D6C4C', N'D4888C71-0632-4310-885E-57E99F664885', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/SalesManage/SalesQuote/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'92E0A8FB-4476-4DE3-8DF3-11B359299150', N'D4888C71-0632-4310-885E-57E99F664885', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/SalesManage/SalesQuote/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'B4CF44E5-4F8E-452C-A41B-D5A167B4DDDB', N'D4888C71-0632-4310-885E-57E99F664885', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/SalesManage/SalesQuote/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+-- 销售发货单 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'F02157CD-B9AD-41BA-B81D-2B617902EB56', N'8B6507F4-CB60-48B3-AF7E-4429C5789367', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/SalesManage/SalesDelivery/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'35EF769F-7A26-40E4-B79B-B2B500BA1D24', N'8B6507F4-CB60-48B3-AF7E-4429C5789367', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/SalesManage/SalesDelivery/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'567C3DC7-BC07-4C64-8495-8E8EE4FDE5EF', N'8B6507F4-CB60-48B3-AF7E-4429C5789367', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/SalesManage/SalesDelivery/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'BADDB3B4-6558-4C54-84B5-86F3609F7F1E', N'8B6507F4-CB60-48B3-AF7E-4429C5789367', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/SalesManage/SalesDelivery/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+-- 销售退货单 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'8D918B1E-3864-4C39-B7FC-B38C95441138', N'7F002EAD-1B94-4C7E-87E9-9AF3F8896656', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/SalesManage/SalesReturn/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'073E9506-1482-41BE-A3B6-4BEF9BBAEE76', N'7F002EAD-1B94-4C7E-87E9-9AF3F8896656', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/SalesManage/SalesReturn/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'747CF646-EFBB-4B57-8C93-6BF9CD5C864B', N'7F002EAD-1B94-4C7E-87E9-9AF3F8896656', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/SalesManage/SalesReturn/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'53A9EAFE-E290-4DB0-B96C-87BF56E054A5', N'7F002EAD-1B94-4C7E-87E9-9AF3F8896656', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/SalesManage/SalesReturn/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+-- 销售收款 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'C0E9B6D2-5B1C-42BF-A12D-2B7DEE0A2B6A', N'6FDCD8E8-C26D-4C5F-BBB0-A4024CB35D13', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/SalesManage/SalesReceipt/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'F3C2C497-4317-4C47-B0B6-B4A831E9129F', N'6FDCD8E8-C26D-4C5F-BBB0-A4024CB35D13', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/SalesManage/SalesReceipt/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'31EDDF5E-EBE7-478C-B031-3557A43A60F5', N'6FDCD8E8-C26D-4C5F-BBB0-A4024CB35D13', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/SalesManage/SalesReceipt/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'719D8427-75E3-4DC6-9A53-1AD528A5B290', N'6FDCD8E8-C26D-4C5F-BBB0-A4024CB35D13', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/SalesManage/SalesReceipt/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+-- 供应商管理 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'A4D64066-3725-4E68-B3CD-B7BEB1537410', N'5C9FD769-6081-402A-B1FF-8C59207AF24F', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/PurchaseManage/Supplier/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'A048D717-38ED-421D-AED7-6BE60CFEBD8F', N'5C9FD769-6081-402A-B1FF-8C59207AF24F', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/PurchaseManage/Supplier/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'23DFE88A-4585-47B0-8106-1E6D71925F79', N'5C9FD769-6081-402A-B1FF-8C59207AF24F', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/PurchaseManage/Supplier/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'3C61D86B-8A20-49C0-B418-8F114F02CFFD', N'5C9FD769-6081-402A-B1FF-8C59207AF24F', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/PurchaseManage/Supplier/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+-- 采购询价单 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'08CA70D0-C8F9-4D42-82DB-72ED5C8EC301', N'6AED7A89-EB85-41F9-A292-4247257086F8', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/PurchaseManage/PurchaseInquiry/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'FB2BB0AB-D168-461C-903A-6C12EBD6146E', N'6AED7A89-EB85-41F9-A292-4247257086F8', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/PurchaseManage/PurchaseInquiry/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'E328D016-BC36-4DA0-A168-F708E013B6F5', N'6AED7A89-EB85-41F9-A292-4247257086F8', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/PurchaseManage/PurchaseInquiry/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'633E0398-7FA2-4A6A-9F63-F9BEA88F383C', N'6AED7A89-EB85-41F9-A292-4247257086F8', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/PurchaseManage/PurchaseInquiry/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+-- 采购收货单 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'3A854830-8086-40CE-9816-F40A78746408', N'6763A41B-9308-4CF7-8C57-5A81B9C37275', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/PurchaseManage/PurchaseReceive/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'8A5E8F33-6ED5-4E1A-BDBA-EBD5E6217D2E', N'6763A41B-9308-4CF7-8C57-5A81B9C37275', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/PurchaseManage/PurchaseReceive/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'51D5A9DA-A318-4552-9736-E1CDFBE7453D', N'6763A41B-9308-4CF7-8C57-5A81B9C37275', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/PurchaseManage/PurchaseReceive/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'2167DE58-89F4-4264-9321-209C4842720C', N'6763A41B-9308-4CF7-8C57-5A81B9C37275', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/PurchaseManage/PurchaseReceive/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+-- 采购退货单 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'71D783B2-4927-4FAF-A8AD-570CC5FBD008', N'7212244A-A45A-40F4-B59A-2E0F4CDBD039', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/PurchaseManage/PurchaseReturn/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'EA08BC91-74F3-42A7-9126-4AF6F9526313', N'7212244A-A45A-40F4-B59A-2E0F4CDBD039', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/PurchaseManage/PurchaseReturn/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'FA91802A-4953-4FD4-88A4-9547C50F6622', N'7212244A-A45A-40F4-B59A-2E0F4CDBD039', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/PurchaseManage/PurchaseReturn/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'0221D7A2-4701-4DA2-8467-FFB83F1F7F93', N'7212244A-A45A-40F4-B59A-2E0F4CDBD039', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/PurchaseManage/PurchaseReturn/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+-- 采购付款 按钮
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'7E347338-EA36-4B8B-9214-EE670F14E076', N'560F7C48-E85E-4693-89F6-AFC2A77D47A2', N'0', N'1', N'NF-add', N'新增', NULL, N'1', N'add', N'/PurchaseManage/PurchasePayment/Form', N'0', N'0', N'0', N'0', N'0', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'E28812EF-5E4A-4487-AD99-DE744F9A7C10', N'560F7C48-E85E-4693-89F6-AFC2A77D47A2', N'0', N'1', N'NF-edit', N'修改', NULL, N'2', N'edit', N'/PurchaseManage/PurchasePayment/Form', N'0', N'0', N'0', N'0', N'1', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'D4AB5A91-0CBE-4851-9807-5CA9877BDB4D', N'560F7C48-E85E-4693-89F6-AFC2A77D47A2', N'0', N'1', N'NF-delete', N'删除', NULL, N'2', N'delete', N'/PurchaseManage/PurchasePayment/DeleteForm', N'0', N'0', N'0', N'0', N'2', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_ModuleButton] ([F_Id], [F_ModuleId], [F_ParentId], [F_Layers], [F_EnCode], [F_FullName], [F_Icon], [F_Location], [F_JsEvent], [F_UrlAddress], [F_Split], [F_IsPublic], [F_AllowEdit], [F_AllowDelete], [F_SortCode], [F_DeleteMark], [F_EnabledMark], [F_Description], [F_CreatorTime], [F_CreatorUserId], [F_LastModifyTime], [F_LastModifyUserId], [F_DeleteTime], [F_DeleteUserId], [F_Authorize]) VALUES (N'CC98699C-229C-4E98-8EAF-063735440A27', N'560F7C48-E85E-4693-89F6-AFC2A77D47A2', N'0', N'1', N'NF-details', N'查看', NULL, N'2', N'details', N'/PurchaseManage/PurchasePayment/Details', N'0', N'0', N'0', N'0', N'3', N'0', N'1', NULL, N'2026-08-15 00:00:00.0000000', N'9f2ec079-7d0f-4fe2-90ab-8b09a8302aba', NULL, NULL, NULL, NULL, NULL)
+GO
+
+
+-- ============================================
+-- 销售管理 / 采购管理 扩展：管理员角色授权
+-- ============================================
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'580EFDFB-04DC-42E9-B600-52B920B0F8F4', N'1', N'EF8638F2-4BB1-40DB-9833-C8577A5C1FC1', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'12FE35A4-06C5-4827-AC48-0D4241CCD8BA', N'1', N'2517C69D-8C1E-48C7-8452-528A8441174C', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'BBCFE78C-14A6-4723-BB8F-BE48E34786A0', N'1', N'E606C53D-95CE-4BC4-9025-8991D3632B27', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'BD03F949-B9A6-4146-9A81-D8A106A5241C', N'1', N'F91F7E02-6F35-4217-9A50-2F4A56164509', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'020B3A52-775A-4EFF-AB2D-FF929B90BCDF', N'1', N'D5C2F359-6705-4151-B062-0191B38F9B23', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'BAA37ED3-A3A2-4455-A263-ECCFBDAE1211', N'1', N'A5E310B1-8BFB-4A92-8B14-E4823CE1D001', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'B97F2727-2009-49C4-9495-1C3BA9A2FEA1', N'1', N'42F30A72-C965-4DE4-9272-EC1F6D7F5F66', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'4CF58DBF-6B73-4C9A-B3FB-ACF51E9349C5', N'1', N'17C91484-056B-4552-8F1E-56C52EC84B89', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'6A820C88-712A-4636-B384-46654E80B14B', N'1', N'59EF09E6-6FC4-4579-B7B5-DF379EB3217E', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'87635A35-A4C8-46A9-8E29-B90AA937CCFE', N'1', N'D4888C71-0632-4310-885E-57E99F664885', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'6940F4C8-C77D-4D1B-92C5-B56811FBAB5C', N'1', N'8B6507F4-CB60-48B3-AF7E-4429C5789367', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'781EC1DB-8388-4A78-AF63-757442B3A55C', N'1', N'7F002EAD-1B94-4C7E-87E9-9AF3F8896656', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'BBE41D82-C317-499D-92F3-F3FA809659C5', N'1', N'6FDCD8E8-C26D-4C5F-BBB0-A4024CB35D13', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'FE745B87-4D0D-40F8-A3B9-11AE15EFCC93', N'1', N'2AAC38F0-DB62-40FD-88CD-8ABCC68BAD97', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'F0F69735-4407-49DD-B30F-E8A41603A117', N'1', N'5C9FD769-6081-402A-B1FF-8C59207AF24F', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'91744CC1-B149-4AC1-9249-813D22FF828C', N'1', N'6AED7A89-EB85-41F9-A292-4247257086F8', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'4D81084B-14D2-41CA-8FD3-AC20D8560ECF', N'1', N'6763A41B-9308-4CF7-8C57-5A81B9C37275', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'4E14C12A-5DDF-40EE-B2B4-13D83990BBDA', N'1', N'7212244A-A45A-40F4-B59A-2E0F4CDBD039', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'ED56C7C8-6F47-461B-AFEE-DAC38C0A4181', N'1', N'560F7C48-E85E-4693-89F6-AFC2A77D47A2', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'B091C2B6-BEEE-48B2-8692-431AFF8139C2', N'1', N'B74EC7F9-170A-4C4E-A1FA-9FCCE358B03D', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'0CF85647-9AC0-40E4-8B15-A00CA17C5A33', N'2', N'CD6AB6D2-644B-4F7C-B9C9-AC8E75FF2DB9', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'FB0B1437-11E1-4721-ADFA-7E196A016D9E', N'2', N'D344626E-601B-4E8C-B11A-A0B3ED4FFAFD', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'9E8D4D38-2B23-41FB-9C18-41F665FE95B5', N'2', N'9FC7A148-7752-45EC-8E5A-DE5261D5CEEE', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'8037FB40-8635-4720-971B-AE432A9E2EC9', N'2', N'5DE9EE5A-E6D5-4C35-8EB3-7899161F79B3', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'AAB6968F-F1F7-47D5-ADE5-295CA309942F', N'2', N'B4694DB7-ECAA-41B4-9B5F-B1BB5824E19B', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'2055D807-4259-4026-8C70-C429BF673388', N'2', N'2C703E59-2A8D-41DC-843C-210AB01D6C4C', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'6C6734DB-108C-492D-A1A3-0EC255207BEA', N'2', N'92E0A8FB-4476-4DE3-8DF3-11B359299150', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'7552A740-1E56-44B4-BF62-F055E83CDD7B', N'2', N'B4CF44E5-4F8E-452C-A41B-D5A167B4DDDB', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'5FF36793-AE04-40CE-A59F-4F6241729684', N'2', N'F02157CD-B9AD-41BA-B81D-2B617902EB56', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'72D485CC-2E25-46B0-8EC0-48AFAE011558', N'2', N'35EF769F-7A26-40E4-B79B-B2B500BA1D24', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'D028AA07-022B-4861-B598-EB1263F45110', N'2', N'567C3DC7-BC07-4C64-8495-8E8EE4FDE5EF', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'38654EBA-9543-4103-AED7-A0E3A526A278', N'2', N'BADDB3B4-6558-4C54-84B5-86F3609F7F1E', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'ED42F3F6-7D85-4CA5-B77E-52A120470129', N'2', N'8D918B1E-3864-4C39-B7FC-B38C95441138', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'962CAA29-1708-479C-AB10-FABB677D991B', N'2', N'073E9506-1482-41BE-A3B6-4BEF9BBAEE76', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'4511C54A-2435-40D9-840E-76181CC6641F', N'2', N'747CF646-EFBB-4B57-8C93-6BF9CD5C864B', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'84D13DC2-5B6B-45E3-A0F6-D9F0C1BCD916', N'2', N'53A9EAFE-E290-4DB0-B96C-87BF56E054A5', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'8B27D548-12D0-4D2E-AA2B-7A3B8652A54E', N'2', N'C0E9B6D2-5B1C-42BF-A12D-2B7DEE0A2B6A', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'D86C2047-C69B-4D51-85EE-090510FB0065', N'2', N'F3C2C497-4317-4C47-B0B6-B4A831E9129F', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'5627C1C2-D930-40E2-B5B3-CC9AB61A4504', N'2', N'31EDDF5E-EBE7-478C-B031-3557A43A60F5', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'A1F0C99D-8B89-40ED-BEFC-8F23C288A026', N'2', N'719D8427-75E3-4DC6-9A53-1AD528A5B290', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'F130575E-F072-4AFF-84DE-656A8380E1F6', N'2', N'A4D64066-3725-4E68-B3CD-B7BEB1537410', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'45499A21-0F86-4527-B059-06B419DC1FD3', N'2', N'A048D717-38ED-421D-AED7-6BE60CFEBD8F', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'6B3C234A-C037-45C5-98C8-8506E9CABF66', N'2', N'23DFE88A-4585-47B0-8106-1E6D71925F79', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'2DDF04B1-E10C-43AF-A42F-C000439F7ADF', N'2', N'3C61D86B-8A20-49C0-B418-8F114F02CFFD', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'76BAA367-E604-472D-A0CC-E5C05857D85C', N'2', N'08CA70D0-C8F9-4D42-82DB-72ED5C8EC301', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'A8756578-EA16-4660-A0E0-2A1C0C6CC793', N'2', N'FB2BB0AB-D168-461C-903A-6C12EBD6146E', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'BDED73D3-06C6-4407-928C-F9688A569632', N'2', N'E328D016-BC36-4DA0-A168-F708E013B6F5', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'3687990C-2167-45A0-A274-C52269635F75', N'2', N'633E0398-7FA2-4A6A-9F63-F9BEA88F383C', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'E3CB2D29-F2EC-4506-B516-B0DE79E03D69', N'2', N'3A854830-8086-40CE-9816-F40A78746408', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'CBB8E41F-9D7A-4327-B5F3-2B73E60D1806', N'2', N'8A5E8F33-6ED5-4E1A-BDBA-EBD5E6217D2E', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'29BD3A14-F66C-448B-8A42-718DE156CE8C', N'2', N'51D5A9DA-A318-4552-9736-E1CDFBE7453D', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'93E32374-5E79-44BE-A3DE-F9248E45A7A0', N'2', N'2167DE58-89F4-4264-9321-209C4842720C', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'329BAFF3-FF53-4194-B9A8-1A188A127576', N'2', N'71D783B2-4927-4FAF-A8AD-570CC5FBD008', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'98611E90-3E91-4E58-AA03-9AA94DD65093', N'2', N'EA08BC91-74F3-42A7-9126-4AF6F9526313', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'F27766CE-E020-4F3D-8A7D-4D2F52F884A7', N'2', N'FA91802A-4953-4FD4-88A4-9547C50F6622', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'44A38644-F93D-4090-8107-7F847D339FC1', N'2', N'0221D7A2-4701-4DA2-8467-FFB83F1F7F93', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'21F07578-0208-4169-8DF5-DC0BCA896410', N'2', N'7E347338-EA36-4B8B-9214-EE670F14E076', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'F3522815-F0F1-4A9F-8DCB-31B7F637AD24', N'2', N'E28812EF-5E4A-4487-AD99-DE744F9A7C10', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'C6EE38B8-0A50-4EB6-A352-499F112E0D6E', N'2', N'D4AB5A91-0CBE-4851-9807-5CA9877BDB4D', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO
+INSERT INTO [dbo].[sys_RoleAuthorize] ([F_Id], [F_ItemType], [F_ItemId], [F_ObjectType], [F_ObjectId], [F_SortCode], [F_CreatorTime], [F_CreatorUserId]) VALUES (N'4FAC59BB-2A83-4A09-B911-12C2A6BB66D0', N'2', N'CC98699C-229C-4E98-8EAF-063735440A27', N'1', N'08dab311-74dd-44c4-898f-d0a8134f1f48', NULL, NULL, NULL)
+GO

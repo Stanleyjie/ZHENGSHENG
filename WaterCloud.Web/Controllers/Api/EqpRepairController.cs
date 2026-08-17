@@ -14,9 +14,10 @@ using WaterCloud.Service.SystemSecurity;
 
 namespace WaterCloud.Web.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    [ServiceFilter(typeof(LoginFilterAttribute))]
+    // 移动端(钉钉小程序)功能已屏蔽,以下路由特性已注释,接口不再对外开放
+    //[Route("api/[controller]/[action]")]
+    //[ApiController]
+    //[ServiceFilter(typeof(LoginFilterAttribute))]
     public class EqpRepairController: ControllerBase
 	{
         public EqpRepairService eqpRepairService { get; set; }

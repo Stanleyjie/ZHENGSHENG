@@ -313,7 +313,8 @@ namespace WaterCloud.Web
                 endpoints.MapHub<MessageHub>("/chatHub");
                 endpoints.MapControllerRoute("areas", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute("default", "{controller=Login}/{action=Index}/{id?}");
-				endpoints.MapControllerRoute("api", "api/{controller=ApiHome}/{action=Index}/{id?}");
+                // 移动端(钉钉小程序)功能已屏蔽,api约定路由已注释,小程序接口全部失效
+				//endpoints.MapControllerRoute("api", "api/{controller=ApiHome}/{action=Index}/{id?}");
 			});
             GlobalContext.ServiceProvider = app.ApplicationServices;
         }

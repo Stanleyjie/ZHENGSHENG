@@ -1,0 +1,193 @@
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'laydate', 'commonTable', 'table', 'common', 'optimizeSelectOption'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            laydate = layui.laydate,
+            table = layui.table,
+            commonTable = layui.commonTable,
+            common = layui.common;
+        var keyValue = $.request("keyValue");
+        laydate.render({
+            elem: '#F_ReceiveDate',
+            type: 'datetime',
+            format: 'yyyy/MM/dd HH:mm:ss'
+        });
+        common.authorizeFields('adminform');
+        var listData = [];
+        $(function () {
+            initControl();
+            if (!!keyValue) {
+                common.ajax({
+                    url: '/PurchaseManage/PurchaseReceive/GetFormJson',
+                    dataType: 'json',
+                    data: { keyValue: keyValue },
+                    async: false,
+                    success: function (data) {
+                        common.val('adminform', data);
+                        listData = data.list;
+                    }
+                });
+            }
+            else {
+                $('#F_ReceiveCode').val("PR-" + new Date().formatDate('yyyyMMddhhmmss'));
+            }
+            commonTable.rendertable({
+                elem: '#currentTableId',
+                data: listData,
+                defaultToolbar: [],
+                toolbar: !!keyValue ? '' : '#toolbarDemo',
+                search: false,
+                limit: 9999,
+                page: { layout: ['count'] , first: false , last: false },
+                height: 'full-290',
+                filter: { clearFilter: false, },
+                cols: [[
+                    { type: "checkbox", width: 50 },
+                    { field: 'F_MaterialCode', title: '物料编号', minWidth: 145, sort: true },
+                    { field: 'F_MaterialName', title: '物料名称', minWidth: 145, sort: true },
+                    { field: 'F_Price', title: '单价', width: 120, edit: 'text', sort: true },
+                    { field: 'F_NeedNum', title: '数量', width: 150, edit: 'text', sort: true },
+                ]]
+            });
+            form.render();
+            var oneList = [];
+            var moreList = ["NF-delete"];
+            commonTable.tableRowClick("checkbox", "currentTableFilter", "currentTableId", oneList, moreList);
+        });
+        wcLoading.close();
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            var data = table.checkStatus('currentTableId').data;
+            if (obj.event === 'add') {
+                var parentform = window.name;
+                common.modalOpen({ title: "添加明细", url: "/PurchaseManage/PurchaseReceive/AddForm?parentform=" + parentform, width: "400px", height: "420px" });
+            }
+            else if (obj.event === 'delete') {
+                if (data.length == 0) { common.modalMsg("未选中数据", "warning"); return false; }
+                var index = parent.layer.load(0, { shade: [0.5, '#000'] });
+                var cacheData = table.cache.currentTableId;
+                for (var i = 0; i < data.length; i++) {
+                    for (var j = 0; j < cacheData.length; j++) {
+                        if (data[i].F_Id == cacheData[j].F_Id) { cacheData.splice(j, 1); break; }
+                    }
+                }
+                common.modalMsg("操作成功", "success");
+                table.reload('currentTableId', { data: cacheData });
+                parent.layer.close(index);
+            }
+            return false;
+        });
+        function initControl() {
+            //绑定采购订单下拉
+            common.ajax({
+                url: '/PurchaseManage/PurchaseReceive/GetOrderListJson',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    $("#F_PurchaseOrderId").bindSelect({
+                        data: data,
+                        id: "F_Id",
+                        text: "F_PurchaseOrderCode",
+                        value: "F_PurchaseOrderCode"
+                    });
+                }
+            });
+            form.on('select(F_PurchaseOrderId)', function (data) {
+                var orderId = data.value;
+                common.ajax({
+                    url: '/PurchaseManage/PurchaseOrder/GetFormJson',
+                    dataType: 'json',
+                    data: { keyValue: orderId },
+                    async: false,
+                    success: function (d) {
+                        if (d.F_Supplier) { $('#F_Supplier').val(d.F_Supplier); }
+                    }
+                });
+            });
+        }
+        form.on('submit(saveBtn)', function (data) {
+            var postData = data.field;
+            postData.list = table.cache.currentTableId;
+            if (!postData["F_EnabledMark"]) postData["F_EnabledMark"] = false;
+            common.submitForm({
+                url: '/PurchaseManage/PurchaseReceive/SubmitForm?keyValue=' + keyValue,
+                param: postData,
+                success: function () { common.parentreload('data-search-btn'); }
+            })
+            return false;
+        });
+    });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label required">收货单编号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="F_ReceiveCode" name="F_ReceiveCode" autocomplete="off" maxlength="50" lay-verify="required" placeholder="请输入收货单编号" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">采购订单</label>
+                        <div class="layui-input-block">
+                            <select id="F_PurchaseOrderId" name="F_PurchaseOrderId" lay-filter="F_PurchaseOrderId">
+                                <option value="">==请选择==</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label required">供应商</label>
+                        <div class="layui-input-block">
+                            <input id="F_Supplier" name="F_Supplier" type="text" maxlength="100" autocomplete="off" lay-verify="required" placeholder="请输入供应商" class="layui-input"/>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label required">收货日期</label>
+                        <div class="layui-input-block">
+                            <input id="F_ReceiveDate" name="F_ReceiveDate" type="text" autocomplete="off" lay-verify="required" placeholder="请选择收货日期" class="layui-input" />
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">总金额</label>
+                        <div class="layui-input-block">
+                            <input type="number" id="F_TotalMoney" name="F_TotalMoney" lay-verify="number" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <input id="F_Description" name="F_Description" class="layui-input" placeholder="请输入备注">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md12 layui-col-sm12">
+                        <label class="layui-form-label required">收货明细</label>
+                        <div class="layui-input-block">
+                            <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item text-right layui-hide">
+                    <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+            <script type="text/html" id="toolbarDemo">
+                <div class="layui-btn-container" id="toolbar">
+                    <button id="NF-add" name="NF-add" class="layui-btn layui-btn-sm data-add-btn" lay-event="add"><i class="layui-icon">&#xe642;</i>添加</button>
+                    <button id="NF-delete" name="NF-delete" class="layui-btn layui-btn-sm layui-btn-danger layui-hide" lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</button>
+                </div>
+            </script>
+        </div>
+    </div>
+</body>

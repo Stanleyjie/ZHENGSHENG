@@ -1,0 +1,94 @@
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+ <div class="layuimini-container">
+     <div class="layuimini-main">
+         <fieldset class="table-search-fieldset layui-hide" id="searchField">
+             <div>
+                 <form class="layui-form layui-form-pane" >
+                     <div class="layui-form-item">
+                         <div class="layui-inline">
+                             <label class="layui-form-label">关键字:</label>
+                             <div class="layui-input-inline">
+                                 <input type="text" id="txt_keyword" name="txt_keyword" autocomplete="off" class="layui-input" >
+                             </div>
+                         </div>
+                         <div class="layui-inline">
+                             <label class="layui-form-label">开始时间:</label>
+                             <div class="layui-input-inline">
+                                 <input type="text" id="startTime" name="startTime" autocomplete="off" class="layui-input" placeholder="请选择开始时间">
+                             </div>
+                         </div>
+                         <div class="layui-inline">
+                             <label class="layui-form-label">结束时间:</label>
+                             <div class="layui-input-inline">
+                                 <input type="text" id="endTime" name="endTime" autocomplete="off" class="layui-input" placeholder="请选择结束时间">
+                             </div>
+                         </div>
+                        <div class="layui-inline"> 
+                             <button type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+                         </div>
+                     </div>
+                 </form>
+             </div>
+         </fieldset>
+         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+     </div>
+ </div>
+ <script>
+     layui.use(['jquery', 'form','table','commonTable', 'common','optimizeSelectOption','laydate'], function () {
+         var $ = layui.jquery,
+             form = layui.form,
+             table = layui.table,commonTable = layui.commonTable
+             common = layui.common,
+             laydate = layui.laydate;
+         laydate.render({
+             elem: '#startTime',
+             type: 'datetime',
+             format: 'yyyy/MM/dd HH:mm:ss'
+         });
+         laydate.render({
+             elem: '#endTime',
+             type: 'datetime',
+             format: 'yyyy/MM/dd HH:mm:ss'
+         });
+         commonTable.rendertable({
+             elem: '#currentTableId',
+             id: 'currentTableId',
+             url: '/PurchaseManage/PurchaseReport/GetGridJson',
+             cols: [[
+                 { type: "radio", width: 50 },
+                 { field: 'F_PurchaseOrderCode', title: '采购订单编号', width: 170,sort: true,filter: true },
+                 { field: 'F_Supplier', title: '供应商', width: 120,sort: true,filter: true },
+                 { field: 'F_PlanStartTime', title: '计划开始', width: 160, sort: true, filter: { type: 'date[yyyy/MM/dd HH:mm:ss]' } },
+                 { field: 'F_PlanEndTime', title: '计划结束', width: 160, sort: true, filter: { type: 'date[yyyy/MM/dd HH:mm:ss]' } },
+                 { field: 'F_OrderNum', title: '采购数量', width: 100,sort: true,filter: true },
+                 { field: 'F_ReceiveNum', title: '已收货数量', width: 100,sort: true,filter: true },
+                 { field: 'F_OrderMoney', title: '订单金额', width: 120,sort: true,filter: true },
+                 { field: 'F_PaidMoney', title: '已付金额', width: 120,sort: true,filter: true },
+                 { field: 'F_UnpaidMoney', title: '未付金额', width: 120,sort: true,filter: true },
+                 {
+                     field: 'F_IsFinish', title: '完成', width: 80, sort: true, filter: true,
+                     templet: function (d) {
+                         if (d.F_IsFinish == true) {
+                             return "<span class='layui-btn layui-btn-normal layui-btn-xs'>是</span>";
+                         } else {
+                             return "<span class='layui-btn layui-btn-warm layui-btn-xs'>否</span>";
+                         }
+                     }
+                 },
+                  { field: 'F_CreatorTime', title: '下单时间', width: 160, sort: true, filter: { type: 'date[yyyy/MM/dd HH:mm:ss]' } }
+              ]],
+              done: function () { wcLoading.close(); }
+          });
+          form.on('submit(data-search-btn)', function (data) {
+             commonTable.reloadtable({
+                 elem: 'currentTableId',
+                 curr: 1,
+                 where: { keyword: data.field.txt_keyword, startTime: data.field.startTime, endTime: data.field.endTime }
+             });
+              return false;
+          });
+      });
+ </script>

@@ -7,7 +7,7 @@ namespace WaterCloud.DingTalk
 {
     /// <summary>
     /// 自定义机器人
-    /// 水之云MES项目
+    /// 智创MES项目
     /// 相关API开发文档见：https://open-doc.dingtalk.com/microapp/serverapi2/qf2nxq
     /// 需要结合钉钉API接口.Net版本动态库文件TopSdk，引用 DingTalk.Api
     /// 创建时间：2018-12-15

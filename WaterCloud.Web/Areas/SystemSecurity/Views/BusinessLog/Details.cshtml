@@ -1,0 +1,91 @@
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'laydate', 'common'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            common = layui.common;
+        var keyValue = $.request("keyValue");
+        common.authorizeFields('adminform');
+
+        $(function () {
+            common.ajax({
+                url: '/SystemSecurity/BusinessLog/GetFormJson',
+                dataType: 'json',
+                data: { keyValue: keyValue },
+                async: false,
+                success: function (data) {
+                    common.val('adminform', data);
+                    common.setReadOnly('adminform');
+                    form.render();
+                 }
+            });
+       });
+       wcLoading.close();
+   });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item">
+                   <label class="layui-form-label">日志类型</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="F_LogTypeName" name="F_LogTypeName" class="layui-input">
+                   </div>
+                </div>
+                <div class="layui-form-item">
+                   <label class="layui-form-label">操作内容</label>
+                   <div class="layui-input-block">
+                        <textarea id="F_Content" name="F_Content" class="layui-textarea"></textarea>
+                   </div>
+                </div>
+                <div class="layui-form-item">
+                   <label class="layui-form-label">操作人</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="F_OperationUser" name="F_OperationUser" class="layui-input">
+                   </div>
+                </div>
+                <div class="layui-form-item">
+                   <label class="layui-form-label">设备</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="F_EqpName" name="F_EqpName" class="layui-input">
+                   </div>
+                </div>
+                <div class="layui-form-item">
+                   <label class="layui-form-label">工单编号</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="F_WorkOrderCode" name="F_WorkOrderCode" class="layui-input">
+                   </div>
+                </div>
+                <div class="layui-form-item">
+                   <label class="layui-form-label">物料</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="F_MaterialName" name="F_MaterialName" class="layui-input">
+                   </div>
+                </div>
+                <div class="layui-form-item">
+                   <label class="layui-form-label">流转箱</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="F_TransferBoxCode" name="F_TransferBoxCode" class="layui-input">
+                   </div>
+                </div>
+                <div class="layui-form-item">
+                   <label class="layui-form-label">数量</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="F_Num" name="F_Num" class="layui-input">
+                   </div>
+                </div>
+                <div class="layui-form-item">
+                   <label class="layui-form-label">操作时间</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="F_CreatorTime" name="F_CreatorTime" class="layui-input">
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

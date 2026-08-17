@@ -58,27 +58,28 @@ namespace WaterCloud.Web.Controllers
             }
 
         }
-        [HttpGet]
-        public virtual async Task<ActionResult> DingBanding(string OpenId,string Nick, string UnionId,int type=0)
-        {
-            ViewBag.OpenId = OpenId;
-            ViewBag.Nick = Nick;
-            ViewBag.UnionId = UnionId;
-            ViewBag.type = type;
-            ViewBag.ProjectName = "钉钉绑定账号";
-            Request.Query = null;
-            try
-            {
-                var systemset = await _setService.GetFormByHost("");
-                ViewBag.LogoIcon = "../icon/" + systemset.F_Logo;
-                return View();
-            }
-            catch (Exception)
-            {
-                ViewBag.LogoIcon = "../icon/favicon.ico";
-                return View();
-            }
-        }
+        // 移动端(钉钉)功能已屏蔽,以下方法不再对外开放
+        //[HttpGet]
+        //public virtual async Task<ActionResult> DingBanding(string OpenId,string Nick, string UnionId,int type=0)
+        //{
+        //    ViewBag.OpenId = OpenId;
+        //    ViewBag.Nick = Nick;
+        //    ViewBag.UnionId = UnionId;
+        //    ViewBag.type = type;
+        //    ViewBag.ProjectName = "钉钉绑定账号";
+        //    Request.Query = null;
+        //    try
+        //    {
+        //        var systemset = await _setService.GetFormByHost("");
+        //        ViewBag.LogoIcon = "../icon/" + systemset.F_Logo;
+        //        return View();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        ViewBag.LogoIcon = "../icon/favicon.ico";
+        //        return View();
+        //    }
+        //}
         /// <summary>
         /// 验证码获取（此接口已弃用）
         /// </summary>
@@ -227,176 +228,178 @@ namespace WaterCloud.Web.Controllers
                 return Content(new AlwaysResult { state = ResultType.error.ToString(), message = ex.Message }.ToJson());
             }
         }
-        /// <summary>
-        /// 钉钉绑定
-        /// </summary>
-        /// <param name="username">用户</param>
-        /// <param name="password">密码</param>
-        /// <param name="localurl">域名</param>
-        /// <param name="OpenId">钉钉用户openId</param>
-        /// <param name="Nick">钉钉用户名称</param>
-        /// <param name="UnionId">钉钉用户应用Id</param>
-        /// <returns></returns>
-        [HttpPost]
-        [HandlerAjaxOnly]
-        [IgnoreAntiforgeryToken]
-        public async Task<ActionResult> DingBandingUser(string username, string password, string localurl,string OpenId, string Nick, string UnionId)
-        {
-            //根据域名判断租户
-            LogEntity logEntity = new LogEntity();
-            logEntity.F_ModuleName = "绑定钉钉";
-            logEntity.F_Type = DbLogType.Login.ToString();
-            if (GlobalContext.SystemConfig.Debug)
-            {
-                localurl = "";
-            }
-            if (GlobalContext.SystemConfig.SysemUserCode == username)
-            {
-                throw new Exception("禁止使用超管账号");
-            }
-            try
-            {
-                if (!await CheckIP())
-                {
-                    throw new Exception("IP受限");
-                }
-                UserEntity userEntity = await _userService.CheckLogin(username, password, localurl);
-                await _userService.DingBandingUser(userEntity, OpenId, Nick, UnionId);
-                OperatorModel operatorModel = new OperatorModel();
-                operatorModel.UserId = userEntity.F_Id;
-                operatorModel.UserCode = userEntity.F_Account;
-                operatorModel.UserName = userEntity.F_RealName;
-                operatorModel.CompanyId = userEntity.F_OrganizeId;
-                operatorModel.DepartmentId = userEntity.F_DepartmentId;
-                operatorModel.RoleId = userEntity.F_RoleId;
-                operatorModel.LoginIPAddress = WebHelper.Ip;
-                if (GlobalContext.SystemConfig.LocalLAN != false)
-                {
-                    operatorModel.LoginIPAddressName = "本地局域网";
-                }
-                else
-                {
-                    operatorModel.LoginIPAddressName = WebHelper.GetIpLocation(operatorModel.LoginIPAddress);
-                }
-                operatorModel.LoginTime = DateTime.Now;
-                operatorModel.DdUserId = userEntity.F_DingTalkOpenId;
-                operatorModel.WxOpenId = userEntity.F_WxOpenId;
-                //各租户的管理员也是当前数据库的全部权限
-                operatorModel.IsSystem = userEntity.F_IsAdmin.Value;
-                operatorModel.IsAdmin = userEntity.F_IsAdmin.Value;
-                operatorModel.IsBoss = userEntity.F_IsBoss.Value;
-                operatorModel.IsLeaderInDepts = userEntity.F_IsLeaderInDepts.Value;
-                operatorModel.IsSenior = userEntity.F_IsSenior.Value;
-                operatorModel.IsPlanMan = userEntity.F_IsPlanMan.Value;
-                SystemSetEntity setEntity = await _setService.GetForm(userEntity.F_OrganizeId);
-                operatorModel.DbString = setEntity.F_DbString;
-                operatorModel.DBProvider = setEntity.F_DBProvider;
-                if (userEntity.F_Account == GlobalContext.SystemConfig.SysemUserCode)
-                {
-                    operatorModel.IsSystem = true;
-                }
-                else
-                {
-                    operatorModel.IsSystem = false;
-                }
-                //缓存保存用户信息
-                await OperatorProvider.Provider.AddLoginUser(operatorModel, "", "pc_");
-                logEntity.F_Account = userEntity.F_Account;
-                logEntity.F_NickName = userEntity.F_RealName;
-                logEntity.F_Result = true;
-                logEntity.F_Description = "绑定成功";
-                await _logService.WriteDbLog(logEntity);
-                return Content(new AlwaysResult { state = ResultType.success.ToString(), message = "绑定成功。" }.ToJson());
-            }
-            catch (Exception ex)
-            {
-                logEntity.F_Account = username;
-                logEntity.F_NickName = username;
-                logEntity.F_Result = false;
-                logEntity.F_Description = "绑定失败，" + ex.Message;
-                await _logService.WriteDbLog(logEntity);
-                return Content(new AlwaysResult { state = ResultType.error.ToString(), message = ex.Message }.ToJson());
-            }
-        }
-        /// <summary>
-        /// 钉钉扫码登录
-        /// </summary>
-        /// <param name="code">临时授权</param>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<ActionResult> DingLogin(string code)
-        {
-            LogEntity logEntity = new LogEntity();
-            logEntity.F_ModuleName = "系统登录";
-            logEntity.F_Type = DbLogType.Login.ToString();
-            try
-            {
-                if (!await CheckIP())
-                {
-                    throw new Exception("IP受限");
-                }
-                UserEntity userEntity = await _userService.CheckDingLogin(code);
-                if (userEntity.F_Id==null)
-                {
-                    return new RedirectResult(HttpContext.Request.PathBase + "/Login/DingBanding?OpenId="+userEntity.F_DingTalkOpenId+"&Nick="+ WebUtility.UrlEncode(userEntity.F_DingTalkNick)+"&UnionId="+userEntity.F_DingTalkUnionId + "&type=0");
-                }
-                OperatorModel operatorModel = new OperatorModel();
-                operatorModel.UserId = userEntity.F_Id;
-                operatorModel.UserCode = userEntity.F_Account;
-                operatorModel.UserName = userEntity.F_RealName;
-                operatorModel.CompanyId = userEntity.F_OrganizeId;
-                operatorModel.DepartmentId = userEntity.F_DepartmentId;
-                operatorModel.RoleId = userEntity.F_RoleId;
-                operatorModel.LoginIPAddress = WebHelper.Ip;
-                if (GlobalContext.SystemConfig.LocalLAN != false)
-                {
-                    operatorModel.LoginIPAddressName = "本地局域网";
-                }
-                else
-                {
-                    operatorModel.LoginIPAddressName = WebHelper.GetIpLocation(operatorModel.LoginIPAddress);
-                }
-                operatorModel.LoginTime = DateTime.Now;
-                operatorModel.DdUserId = userEntity.F_DingTalkOpenId;
-                operatorModel.WxOpenId = userEntity.F_WxOpenId;
-                //各租户的管理员也是当前数据库的全部权限
-                operatorModel.IsSystem = userEntity.F_IsAdmin.Value;
-                operatorModel.IsAdmin = userEntity.F_IsAdmin.Value;
-                operatorModel.IsBoss = userEntity.F_IsBoss.Value;
-                operatorModel.IsLeaderInDepts = userEntity.F_IsLeaderInDepts.Value;
-                operatorModel.IsSenior = userEntity.F_IsSenior.Value;
-                operatorModel.IsPlanMan = userEntity.F_IsPlanMan.Value;
-                SystemSetEntity setEntity = await _setService.GetForm(userEntity.F_OrganizeId);
-                operatorModel.DbString = setEntity.F_DbString;
-                operatorModel.DBProvider = setEntity.F_DBProvider;
-                if (userEntity.F_Account == GlobalContext.SystemConfig.SysemUserCode)
-                {
-                    operatorModel.IsSystem = true;
-                }
-                else
-                {
-                    operatorModel.IsSystem = false;
-                }
-                //缓存保存用户信息
-                await OperatorProvider.Provider.AddLoginUser(operatorModel, "", "pc_");
-                logEntity.F_Account = userEntity.F_Account;
-                logEntity.F_NickName = userEntity.F_RealName;
-                logEntity.F_Result = true;
-                logEntity.F_Description = "登录成功";
-                await _logService.WriteDbLog(logEntity);
-                return new RedirectResult(HttpContext.Request.PathBase + "/Home/Index");
+        // 移动端(钉钉)功能已屏蔽,以下方法不再对外开放
+        ///// <summary>
+        ///// 钉钉绑定
+        ///// </summary>
+        ///// <param name="username">用户</param>
+        ///// <param name="password">密码</param>
+        ///// <param name="localurl">域名</param>
+        ///// <param name="OpenId">钉钉用户openId</param>
+        ///// <param name="Nick">钉钉用户名称</param>
+        ///// <param name="UnionId">钉钉用户应用Id</param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //[HandlerAjaxOnly]
+        //[IgnoreAntiforgeryToken]
+        //public async Task<ActionResult> DingBandingUser(string username, string password, string localurl,string OpenId, string Nick, string UnionId)
+        //{
+        //    //根据域名判断租户
+        //    LogEntity logEntity = new LogEntity();
+        //    logEntity.F_ModuleName = "绑定钉钉";
+        //    logEntity.F_Type = DbLogType.Login.ToString();
+        //    if (GlobalContext.SystemConfig.Debug)
+        //    {
+        //        localurl = "";
+        //    }
+        //    if (GlobalContext.SystemConfig.SysemUserCode == username)
+        //    {
+        //        throw new Exception("禁止使用超管账号");
+        //    }
+        //    try
+        //    {
+        //        if (!await CheckIP())
+        //        {
+        //            throw new Exception("IP受限");
+        //        }
+        //        UserEntity userEntity = await _userService.CheckLogin(username, password, localurl);
+        //        await _userService.DingBandingUser(userEntity, OpenId, Nick, UnionId);
+        //        OperatorModel operatorModel = new OperatorModel();
+        //        operatorModel.UserId = userEntity.F_Id;
+        //        operatorModel.UserCode = userEntity.F_Account;
+        //        operatorModel.UserName = userEntity.F_RealName;
+        //        operatorModel.CompanyId = userEntity.F_OrganizeId;
+        //        operatorModel.DepartmentId = userEntity.F_DepartmentId;
+        //        operatorModel.RoleId = userEntity.F_RoleId;
+        //        operatorModel.LoginIPAddress = WebHelper.Ip;
+        //        if (GlobalContext.SystemConfig.LocalLAN != false)
+        //        {
+        //            operatorModel.LoginIPAddressName = "本地局域网";
+        //        }
+        //        else
+        //        {
+        //            operatorModel.LoginIPAddressName = WebHelper.GetIpLocation(operatorModel.LoginIPAddress);
+        //        }
+        //        operatorModel.LoginTime = DateTime.Now;
+        //        operatorModel.DdUserId = userEntity.F_DingTalkOpenId;
+        //        operatorModel.WxOpenId = userEntity.F_WxOpenId;
+        //        //各租户的管理员也是当前数据库的全部权限
+        //        operatorModel.IsSystem = userEntity.F_IsAdmin.Value;
+        //        operatorModel.IsAdmin = userEntity.F_IsAdmin.Value;
+        //        operatorModel.IsBoss = userEntity.F_IsBoss.Value;
+        //        operatorModel.IsLeaderInDepts = userEntity.F_IsLeaderInDepts.Value;
+        //        operatorModel.IsSenior = userEntity.F_IsSenior.Value;
+        //        operatorModel.IsPlanMan = userEntity.F_IsPlanMan.Value;
+        //        SystemSetEntity setEntity = await _setService.GetForm(userEntity.F_OrganizeId);
+        //        operatorModel.DbString = setEntity.F_DbString;
+        //        operatorModel.DBProvider = setEntity.F_DBProvider;
+        //        if (userEntity.F_Account == GlobalContext.SystemConfig.SysemUserCode)
+        //        {
+        //            operatorModel.IsSystem = true;
+        //        }
+        //        else
+        //        {
+        //            operatorModel.IsSystem = false;
+        //        }
+        //        //缓存保存用户信息
+        //        await OperatorProvider.Provider.AddLoginUser(operatorModel, "", "pc_");
+        //        logEntity.F_Account = userEntity.F_Account;
+        //        logEntity.F_NickName = userEntity.F_RealName;
+        //        logEntity.F_Result = true;
+        //        logEntity.F_Description = "绑定成功";
+        //        await _logService.WriteDbLog(logEntity);
+        //        return Content(new AlwaysResult { state = ResultType.success.ToString(), message = "绑定成功。" }.ToJson());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logEntity.F_Account = username;
+        //        logEntity.F_NickName = username;
+        //        logEntity.F_Result = false;
+        //        logEntity.F_Description = "绑定失败，" + ex.Message;
+        //        await _logService.WriteDbLog(logEntity);
+        //        return Content(new AlwaysResult { state = ResultType.error.ToString(), message = ex.Message }.ToJson());
+        //    }
+        //}
+        // 移动端(钉钉)功能已屏蔽,以下方法不再对外开放
+        ///// <summary>
+        ///// 钉钉扫码登录
+        ///// </summary>
+        ///// <param name="code">临时授权</param>
+        ///// <returns></returns>
+        //[HttpGet]
+        //public async Task<ActionResult> DingLogin(string code)
+        //{
+        //    LogEntity logEntity = new LogEntity();
+        //    logEntity.F_ModuleName = "系统登录";
+        //    logEntity.F_Type = DbLogType.Login.ToString();
+        //    try
+        //    {
+        //        if (!await CheckIP())
+        //        {
+        //            throw new Exception("IP受限");
+        //        }
+        //        UserEntity userEntity = await _userService.CheckDingLogin(code);
+        //        if (userEntity.F_Id==null)
+        //        {
+        //            return new RedirectResult(HttpContext.Request.PathBase + "/Login/DingBanding?OpenId="+userEntity.F_DingTalkOpenId+"&Nick="+ WebUtility.UrlEncode(userEntity.F_DingTalkNick)+"&UnionId="+userEntity.F_DingTalkUnionId + "&type=0");
+        //        }
+        //        OperatorModel operatorModel = new OperatorModel();
+        //        operatorModel.UserId = userEntity.F_Id;
+        //        operatorModel.UserCode = userEntity.F_Account;
+        //        operatorModel.UserName = userEntity.F_RealName;
+        //        operatorModel.CompanyId = userEntity.F_OrganizeId;
+        //        operatorModel.DepartmentId = userEntity.F_DepartmentId;
+        //        operatorModel.RoleId = userEntity.F_RoleId;
+        //        operatorModel.LoginIPAddress = WebHelper.Ip;
+        //        if (GlobalContext.SystemConfig.LocalLAN != false)
+        //        {
+        //            operatorModel.LoginIPAddressName = "本地局域网";
+        //        }
+        //        else
+        //        {
+        //            operatorModel.LoginIPAddressName = WebHelper.GetIpLocation(operatorModel.LoginIPAddress);
+        //        }
+        //        operatorModel.LoginTime = DateTime.Now;
+        //        operatorModel.DdUserId = userEntity.F_DingTalkOpenId;
+        //        operatorModel.WxOpenId = userEntity.F_WxOpenId;
+        //        //各租户的管理员也是当前数据库的全部权限
+        //        operatorModel.IsSystem = userEntity.F_IsAdmin.Value;
+        //        operatorModel.IsAdmin = userEntity.F_IsAdmin.Value;
+        //        operatorModel.IsBoss = userEntity.F_IsBoss.Value;
+        //        operatorModel.IsLeaderInDepts = userEntity.F_IsLeaderInDepts.Value;
+        //        operatorModel.IsSenior = userEntity.F_IsSenior.Value;
+        //        operatorModel.IsPlanMan = userEntity.F_IsPlanMan.Value;
+        //        SystemSetEntity setEntity = await _setService.GetForm(userEntity.F_OrganizeId);
+        //        operatorModel.DbString = setEntity.F_DbString;
+        //        operatorModel.DBProvider = setEntity.F_DBProvider;
+        //        if (userEntity.F_Account == GlobalContext.SystemConfig.SysemUserCode)
+        //        {
+        //            operatorModel.IsSystem = true;
+        //        }
+        //        else
+        //        {
+        //            operatorModel.IsSystem = false;
+        //        }
+        //        //缓存保存用户信息
+        //        await OperatorProvider.Provider.AddLoginUser(operatorModel, "", "pc_");
+        //        logEntity.F_Account = userEntity.F_Account;
+        //        logEntity.F_NickName = userEntity.F_RealName;
+        //        logEntity.F_Result = true;
+        //        logEntity.F_Description = "登录成功";
+        //        await _logService.WriteDbLog(logEntity);
+        //        return new RedirectResult(HttpContext.Request.PathBase + "/Home/Index");
 
-            }
-            catch (Exception ex)
-            {
-                logEntity.F_Account = "钉钉登录";
-                logEntity.F_NickName = "钉钉登录";
-                logEntity.F_Result = false;
-                logEntity.F_Description = "登录失败，" + ex.Message;
-                await _logService.WriteDbLog(logEntity);
-                return new RedirectResult(HttpContext.Request.PathBase + "/Home/Error?msg=405");
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logEntity.F_Account = "钉钉登录";
+        //        logEntity.F_NickName = "钉钉登录";
+        //        logEntity.F_Result = false;
+        //        logEntity.F_Description = "登录失败，" + ex.Message;
+        //        await _logService.WriteDbLog(logEntity);
+        //        return new RedirectResult(HttpContext.Request.PathBase + "/Home/Error?msg=405");
+        //    }
+        //}
         private async Task<bool> CheckIP()
         {
             string ip = WebHelper.Ip;

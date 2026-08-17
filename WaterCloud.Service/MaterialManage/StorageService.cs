@@ -14,6 +14,7 @@ using System.Linq;
 using System.IO;
 using WaterCloud.Domain.PlanManage;
 using WaterCloud.Service.SystemManage;
+using WaterCloud.Service.SystemSecurity;
 using NPOI.SS.Formula.Functions;
 
 namespace WaterCloud.Service.MaterialManage
@@ -28,11 +29,13 @@ namespace WaterCloud.Service.MaterialManage
         private ControlJobService jobApp;
         private LocationService locationApp;
         private ItemsDataService itemsApp;
+        private BusinessLogService _logApp;
 		public StorageService(IDbContext context, IHttpClientFactory httpClientFactory) : base(context)
         {
             jobApp = new ControlJobService(context, httpClientFactory);
             locationApp = new LocationService(context);
 			itemsApp = new ItemsDataService(context);
+            _logApp = new BusinessLogService(context);
 		}
         #region 获取数据
         public async Task<List<StorageEntity>> GetList(string keyword = "")
@@ -573,6 +576,7 @@ namespace WaterCloud.Service.MaterialManage
             if (IsCommit)
             {
                 uniwork.Commit();
+                await _logApp.WriteLog(8, "库位调整:物料" + storage.F_MaterialName + "从库位" + entity.F_LocationCode + "转移数量" + (entity.F_Num ?? 0), "", "", storage.F_MaterialName, storage.F_TransferBoxCode, entity.F_Num);
             }
         }
 

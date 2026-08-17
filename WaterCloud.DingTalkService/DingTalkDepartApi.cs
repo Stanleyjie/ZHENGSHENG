@@ -8,7 +8,7 @@ namespace WaterCloud.DingTalk
 {
     /// <summary>
     /// 对钉钉部门的业务操作
-    /// 水之云MES项目
+    /// 智创MES项目
     /// 相关API开发文档见：https://open-doc.dingtalk.com/microapp/serverapi2/dubakq
     /// 需要结合钉钉API接口.Net版本动态库文件TopSdk，引用 DingTalk.Api
     /// 创建时间：2018-12-15

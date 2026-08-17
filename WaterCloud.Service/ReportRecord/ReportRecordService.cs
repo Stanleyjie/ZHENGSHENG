@@ -128,6 +128,10 @@ namespace WaterCloud.Service.ReportRecord
                 NextMaterial(temp, flow.lines, list,true);
             }
             flow.areas = new List<FlowArea>();
+            if (list.Count == 0)
+            {
+                return flow;
+            }
             float allnum = list.GroupBy(a => a.sortCode).Select(a => new { a.Key, num = a.Count() }).Max(a => a.num);
             int max = list.Max(a => a.sortCode) ?? 0;
             int min = list.Min(a => a.sortCode) ?? 0;

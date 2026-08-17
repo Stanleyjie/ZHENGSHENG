@@ -1,0 +1,149 @@
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'laydate', 'common', 'optimizeSelectOption'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            laydate = layui.laydate,
+            common = layui.common;
+        var keyValue = $.request("keyValue");
+        laydate.render({
+            elem: '#F_PaymentDate',
+            type: 'datetime',
+            format: 'yyyy/MM/dd HH:mm:ss'
+        });
+        common.authorizeFields('adminform');
+        $(function () {
+            initControl();
+            if (!!keyValue) {
+                common.ajax({
+                    url: '/PurchaseManage/PurchasePayment/GetFormJson',
+                    dataType: 'json',
+                    data: { keyValue: keyValue },
+                    async: false,
+                    success: function (data) {
+                        common.val('adminform', data);
+                    }
+                });
+            }
+            else {
+                $('#F_PaymentCode').val("PP-" + new Date().formatDate('yyyyMMddhhmmss'));
+            }
+            form.render();
+        });
+        function initControl() {
+            //绑定采购订单下拉
+            common.ajax({
+                url: '/PurchaseManage/PurchasePayment/GetOrderListJson',
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    $("#F_PurchaseOrderId").bindSelect({
+                        data: data,
+                        id: "F_Id",
+                        text: "F_PurchaseOrderCode"
+                    });
+                }
+            });
+            form.on('select(F_PurchaseOrderId)', function (data) {
+                var orderId = data.value;
+                common.ajax({
+                    url: '/PurchaseManage/PurchaseOrder/GetFormJson',
+                    dataType: 'json',
+                    data: { keyValue: orderId },
+                    async: false,
+                    success: function (d) {
+                        if (d.F_Supplier) { $('#F_Supplier').val(d.F_Supplier); }
+                    }
+                });
+            });
+        }
+        wcLoading.close();
+        form.on('submit(saveBtn)', function (data) {
+            var postData = data.field;
+            if (!postData["F_EnabledMark"]) postData["F_EnabledMark"] = false;
+            common.submitForm({
+                url: '/PurchaseManage/PurchasePayment/SubmitForm?keyValue=' + keyValue,
+                param: postData,
+                success: function () {
+                    common.parentreload('data-search-btn');
+                }
+            })
+            return false;
+        });
+    });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label required">付款单编号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="F_PaymentCode" name="F_PaymentCode" autocomplete="off" maxlength="50" lay-verify="required" placeholder="请输入付款单编号" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">采购订单</label>
+                        <div class="layui-input-block">
+                            <select id="F_PurchaseOrderId" name="F_PurchaseOrderId" lay-filter="F_PurchaseOrderId">
+                                <option value="">==请选择==</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label required">供应商</label>
+                        <div class="layui-input-block">
+                            <input id="F_Supplier" name="F_Supplier" type="text" maxlength="100" autocomplete="off" lay-verify="required" placeholder="请输入供应商" class="layui-input"/>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label required">付款日期</label>
+                        <div class="layui-input-block">
+                            <input id="F_PaymentDate" name="F_PaymentDate" type="text" autocomplete="off" lay-verify="required" placeholder="请选择付款日期" class="layui-input" />
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label required">付款金额</label>
+                        <div class="layui-input-block">
+                            <input type="number" id="F_Amount" name="F_Amount" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">付款方式</label>
+                        <div class="layui-input-block">
+                            <input id="F_PayType" name="F_PayType" type="text" maxlength="50" autocomplete="off" placeholder="请输入付款方式" class="layui-input"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-sm6">
+                        <label class="layui-form-label">启用</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="F_EnabledMark" id="F_EnabledMark" value="true" checked title="有效标识">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md12 layui-col-xs12">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <input id="F_Description" name="F_Description" class="layui-input" placeholder="请输入备注">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item text-right layui-hide">
+                    <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

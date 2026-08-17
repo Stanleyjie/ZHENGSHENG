@@ -14,9 +14,10 @@ namespace WaterCloud.Web.Controllers
     /// <summary>
     /// 出库接口
     /// </summary>
-    [Route("api/[controller]/[action]")]
-    [ApiController]
-    [ServiceFilter(typeof(LoginFilterAttribute))]
+    // 移动端(钉钉小程序)功能已屏蔽,以下路由特性已注释,接口不再对外开放
+    //[Route("api/[controller]/[action]")]
+    //[ApiController]
+    //[ServiceFilter(typeof(LoginFilterAttribute))]
     public class OutStorageController : ControllerBase
 	{
         //自动注入服务
