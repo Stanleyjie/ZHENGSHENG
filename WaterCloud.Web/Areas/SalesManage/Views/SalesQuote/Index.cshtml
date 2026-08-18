@@ -26,6 +26,7 @@
                  <button id="NF-add" name="NF-add" authorize class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe654;</i>新增</button>
                  <button id="NF-edit" name="NF-edit" authorize class="layui-btn layui-btn-sm layui-btn-warm layui-hide" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</button>
                  <button id="NF-delete" name="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger layui-hide" lay-event="delete"> <i class="layui-icon">&#xe640;</i>删除</button>
+                 <button id="NF-approve" name="NF-approve" authorize class="layui-btn layui-btn-sm layui-btn-normal layui-hide" lay-event="approve"> <i class="fa fa-check"></i>审核通过</button>
                  <button id="NF-details" name="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal layui-hide" lay-event="details"> <i class="layui-icon">&#xe60b;</i>查看</button>
              </div>
          </script>
@@ -33,6 +34,7 @@
          <script type="text/html" id="currentTableBar">
              <a id="NF-edit" authorize class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
              <a id="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete"><i class="layui-icon">&#xe640;</i></a>
+             <a id="NF-approve" authorize class="layui-btn layui-btn-sm layui-btn-normal" lay-event="approve"><i class="fa fa-check"></i></a>
              <a id="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal" lay-event="details"><i class="layui-icon">&#xe60b;</i></a>
          </script>
      </div>
@@ -56,6 +58,15 @@
                  { field: 'F_QuoteDate', title: '报价日期', width: 160, sort: true, filter: { type: 'date[yyyy/MM/dd HH:mm:ss]' } },
                  { field: 'F_NeedNum', title: '数量', width: 100,sort: true,filter: true },
                  { field: 'F_TotalMoney', title: '总金额', width: 120,sort: true,filter: true },
+                 {
+                     field: 'F_QuoteState', title: '审核状态', width: 90, sort: true, filter: true,
+                     templet: function (d) {
+                         if (d.F_QuoteState == 1) {
+                             return "<span class='layui-btn layui-btn-normal layui-btn-xs'>已审核</span>";
+                         }
+                         return "<span class='layui-btn layui-btn-warm layui-btn-xs'>待审核</span>";
+                     }
+                 },
                  { field: 'F_CreatorTime', title: '创建时间', width: 160, sort: true, filter: { type: 'date[yyyy/MM/dd HH:mm:ss]' } },
                  { field: 'F_Description', title: '备注', minWidth: 120, filter: true },
                 { title: '操作', width: 170, toolbar: '#currentTableBar', align: "center" }
@@ -66,7 +77,7 @@
              return false;
          });
          wcLoading.close();
-         var oneList = ["NF-edit", "NF-details", "NF-delete"];
+         var oneList = ["NF-edit", "NF-details", "NF-delete", "NF-approve"];
          commonTable.tableRowClick("radio", "currentTableFilter", "currentTableId", oneList);
          table.on('toolbar(currentTableFilter)', function (obj) { 
              var data = table.checkStatus('currentTableId').data;
@@ -84,11 +95,23 @@
                 if (data.length == 0) { common.modalMsg("未选中数据", "warning"); return false; }
                 common.modalOpen({ title: "编辑报价单", url: "/SalesManage/SalesQuote/Form?keyValue=" + id, width: "780px", height: "650px" });
            }
-           else if (obj.event === 'details') {
-                if (data.length == 0) { common.modalMsg("未选中数据", "warning"); return false; }
-                common.modalOpen({ title: "查看报价单", url: "/SalesManage/SalesQuote/Details?keyValue=" + id, width: "780px", height: "650px", btn: [] });
-             }
-           else if (obj.event === 'TABLE_SEARCH') {
+            else if (obj.event === 'details') {
+                 if (data.length == 0) { common.modalMsg("未选中数据", "warning"); return false; }
+                 common.modalOpen({ title: "查看报价单", url: "/SalesManage/SalesQuote/Details?keyValue=" + id, width: "780px", height: "650px", btn: [] });
+              }
+            else if (obj.event === 'approve') {
+                 if (data.length == 0) { common.modalMsg("未选中数据", "warning"); return false; }
+                 common.submitPost({
+                     prompt: "注：审核通过后将根据该报价单生成销售订单，确定吗？",
+                     url: "/SalesManage/SalesQuote/ApproveForm",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                         common.openNewTabByIframe({ title: "销售订单", href: "/SalesManage/SalesOrder/Index" });
+                     }
+                 });
+              }
+            else if (obj.event === 'TABLE_SEARCH') {
                 var _that = $("#searchField");
                 if (_that.hasClass("layui-hide")) { _that.removeClass('layui-hide'); } else { _that.addClass('layui-hide'); }
            }
@@ -102,10 +125,21 @@
             else if (obj.event === 'edit') {
                common.modalOpen({ title: "编辑报价单", url: "/SalesManage/SalesQuote/Form?keyValue=" + id, width: "780px", height: "650px" });
             }
-            else if (obj.event === 'details') {
-                common.modalOpen({ title: "查看报价单", url: "/SalesManage/SalesQuote/Details?keyValue=" + id, width: "780px", height: "650px", btn: [] });
-            }
-            return false;
-        });
-   });
-</script>
+             else if (obj.event === 'details') {
+                 common.modalOpen({ title: "查看报价单", url: "/SalesManage/SalesQuote/Details?keyValue=" + id, width: "780px", height: "650px", btn: [] });
+             }
+             else if (obj.event === 'approve') {
+                 common.submitPost({
+                     prompt: "注：审核通过后将根据该报价单生成销售订单，确定吗？",
+                     url: "/SalesManage/SalesQuote/ApproveForm",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                         common.openNewTabByIframe({ title: "销售订单", href: "/SalesManage/SalesOrder/Index" });
+                     }
+                 });
+             }
+             return false;
+         });
+    });
+ </script>

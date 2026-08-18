@@ -84,6 +84,21 @@ namespace WaterCloud.Web.Areas.SalesManage.Controllers
                 return await Error(ex.Message, "", keyValue, DbLogType.Delete);
             }
         }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ServiceFilter(typeof(HandlerAuthorizeAttribute))]
+        public async Task<ActionResult> ApproveForm(string keyValue)
+        {
+            try
+            {
+                await _service.ApproveForm(keyValue);
+                return await Success("审核通过，已生成销售订单。", "", keyValue, DbLogType.Submit);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue, DbLogType.Submit);
+            }
+        }
         #endregion
     }
 }

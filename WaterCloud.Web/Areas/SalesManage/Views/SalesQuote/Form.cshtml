@@ -19,6 +19,11 @@
         common.authorizeFields('adminform');
         var listData = [];
         $(function () {
+            layui.$('#F_Customer').bindSelect({
+                url: "/SalesManage/SalesOrder/GetCustomerListJson",
+                id: "F_CustomerName",
+                text: "F_CustomerName"
+            });
             if (!!keyValue) {
                 common.ajax({
                     url: '/SalesManage/SalesQuote/GetFormJson',
@@ -107,7 +112,9 @@
                     <div class="layui-col-md6 layui-col-sm6">
                         <label class="layui-form-label required">客户</label>
                         <div class="layui-input-block">
-                            <input id="F_Customer" name="F_Customer" type="text" maxlength="100" autocomplete="off" placeholder="请输入客户" class="layui-input"/>
+                            <select id="F_Customer" name="F_Customer" lay-search lay-verify="required">
+                                <option value="">请选择客户</option>
+                            </select>
                         </div>
                     </div>
                 </div>

@@ -115,6 +115,18 @@ namespace WaterCloud.Domain.ProcessManage
         public string F_DeleteUserId { get; set; }
         public int? F_SplitType { get; set; }
         public string F_WorkPlanId { get; set; }
+        /// <summary>
+        /// 来源销售订单Id
+        /// </summary>
+        public string F_SalesOrderId { get; set; }
+        /// <summary>
+        /// 来源销售订单编号
+        /// </summary>
+        public string F_SalesOrderCode { get; set; }
+        /// <summary>
+        /// 来源销售订单明细Id
+        /// </summary>
+        public string F_SalesOrderDetailId { get; set; }
 
     }
 }

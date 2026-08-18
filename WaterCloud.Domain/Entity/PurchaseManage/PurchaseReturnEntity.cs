@@ -24,6 +24,10 @@ namespace WaterCloud.Domain.PurchaseManage
         /// </summary>
         public string F_PurchaseOrderId { get; set; }
         /// <summary>
+        /// 关联采购收货单Id
+        /// </summary>
+        public string F_ReceiveId { get; set; }
+        /// <summary>
         /// 供应商
         /// </summary>
         public string F_Supplier { get; set; }

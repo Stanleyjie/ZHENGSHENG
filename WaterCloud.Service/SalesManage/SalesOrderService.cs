@@ -6,6 +6,7 @@ using WaterCloud.Code;
 using Chloe;
 using WaterCloud.Domain.SalesManage;
 using WaterCloud.Domain.MaterialManage;
+using WaterCloud.Domain.ProcessManage;
 using WaterCloud.Service.MaterialManage;
 using System.Net.Http;
 using WaterCloud.Service.SystemManage;
@@ -64,7 +65,8 @@ namespace WaterCloud.Service.SalesManage
 
         public async Task<List<SalesOrderEntity>> GetLookList(SoulPage<SalesOrderEntity> pagination, string keyword = "", string id = "")
         {
-            var query = IQueryable().Where(t => t.F_DeleteMark == false);
+            //已流转到销售发货单的订单不再显示
+            var query = IQueryable().Where(t => t.F_DeleteMark == false && (t.F_IsFinish == null || t.F_IsFinish == false));
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(t => t.F_SalesOrderCode.Contains(keyword)
@@ -151,6 +153,10 @@ namespace WaterCloud.Service.SalesManage
             }
             if (string.IsNullOrEmpty(keyValue))
             {
+                if (string.IsNullOrEmpty(entity.F_SalesOrderCode))
+                {
+                    entity.F_SalesOrderCode = "SO-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                }
                 //初始值添加
                 entity.F_DeleteMark = false;
                 entity.F_EnabledMark = false;
@@ -233,6 +239,199 @@ namespace WaterCloud.Service.SalesManage
             {
                 F_EnabledMark = true
             });
+        }
+        /// <summary>
+        /// 从销售订单生成生产工单（按BOM展开明细）
+        /// </summary>
+        public async Task CreateWorkOrder(string keyValue)
+        {
+            var order = await repository.FindEntity(keyValue);
+            if (order == null)
+            {
+                throw new Exception("销售订单不存在");
+            }
+            if (order.F_EnabledMark != true)
+            {
+                throw new Exception("请先启用销售订单，再生成工单");
+            }
+            if (order.F_IsFinish == true)
+            {
+                throw new Exception("销售订单已结案，不能生成工单");
+            }
+            var details = uniwork.IQueryable<SalesOrderDetailEntity>(a => a.F_SalesOrderId == keyValue).ToList();
+            if (details.Count == 0)
+            {
+                throw new Exception("销售订单没有明细，无法生成工单");
+            }
+            //已经生成过工单的明细，跳过（防止重复生成）
+            var generated = uniwork.IQueryable<WorkOrderEntity>(a => a.F_SalesOrderId == keyValue)
+                .Select(a => a.F_SalesOrderDetailId).ToList().Where(a => a != null).ToList();
+            uniwork.BeginTrans();
+            int count = 1;
+            foreach (var detail in details)
+            {
+                if (generated.Contains(detail.F_Id))
+                {
+                    continue;
+                }
+                WorkOrderEntity work = new WorkOrderEntity();
+                work.F_WorkOrderCode = "WO-" + DateTime.Now.ToString("yyyyMMddHHmmss") + count;
+                work.F_MaterialId = detail.F_MaterialId;
+                work.F_PlanNum = detail.F_NeedNum;
+                work.F_PlanStartTime = order.F_PlanStartTime;
+                work.F_PlanEndTime = order.F_PlanEndTime;
+                work.F_WorkOrderState = 0;
+                work.F_SplitType = 0;
+                work.F_SalesOrderId = order.F_Id;
+                work.F_SalesOrderCode = order.F_SalesOrderCode;
+                work.F_SalesOrderDetailId = detail.F_Id;
+                work.F_Description = "销售订单:" + order.F_SalesOrderCode + " 客户:" + order.F_Customer;
+                work.F_DeleteMark = false;
+                work.F_EnabledMark = true;
+                work.F_DoneNum = 0;
+                work.F_BadNum = 0;
+                work.Create();
+                await uniwork.Insert(work);
+                //BOM展开工单明细
+                WorkOrderDetailEntity parent = new WorkOrderDetailEntity();
+                parent.F_MaterialId = detail.F_MaterialId;
+                parent.Create();
+                parent.F_BadNum = 0;
+                parent.F_PlanNum = detail.F_NeedNum;
+                parent.F_DoneNum = 0;
+                parent.F_DeleteMark = false;
+                parent.F_EnabledMark = true;
+                parent.F_PlanEndTime = work.F_PlanEndTime;
+                parent.F_PlanStartTime = work.F_PlanStartTime;
+                parent.F_Description = work.F_Description;
+                parent.F_WorkOrderId = work.F_Id;
+                parent.F_RunSort = 0;
+                parent.F_WorkOrderState = 0;
+                List<WorkOrderDetailEntity> list = new List<WorkOrderDetailEntity>();
+                list.Add(parent);
+                GetBomDetail(parent, list, new List<string> { detail.F_MaterialId });
+                //合并相同物料，重排执行顺序
+                List<WorkOrderDetailEntity> detailList = new List<WorkOrderDetailEntity>();
+                int sort = 1;
+                foreach (var item in list.OrderBy(a => a.F_RunSort).ToList())
+                {
+                    var find = detailList.Where(a => a.F_MaterialId == item.F_MaterialId).FirstOrDefault();
+                    if (find != null)
+                    {
+                        find.F_PlanNum += item.F_PlanNum;
+                    }
+                    else
+                    {
+                        item.F_RunSort = sort;
+                        detailList.Add(item);
+                        sort++;
+                    }
+                }
+                if (detailList.Count > 0)
+                {
+                    await uniwork.Insert(detailList);
+                }
+                count++;
+            }
+            uniwork.Commit();
+        }
+        /// <summary>
+        /// 完成订单：根据销售订单生成销售发货单，并标记订单完成
+        /// </summary>
+        public async Task FinishForm(string keyValue)
+        {
+            var order = await repository.FindEntity(keyValue);
+            if (order == null)
+            {
+                throw new Exception("销售订单不存在");
+            }
+            if (order.F_EnabledMark != true)
+            {
+                throw new Exception("请先启用销售订单，再生成发货单");
+            }
+            if (order.F_IsFinish == true)
+            {
+                throw new Exception("销售订单已完成，不能重复生成发货单");
+            }
+            if (uniwork.IQueryable<SalesDeliveryEntity>(a => a.F_SalesOrderId == keyValue && a.F_DeleteMark == false).Any())
+            {
+                throw new Exception("该销售订单已生成过发货单");
+            }
+            var details = uniwork.IQueryable<SalesOrderDetailEntity>(a => a.F_SalesOrderId == keyValue).ToList();
+            if (details.Count == 0)
+            {
+                throw new Exception("销售订单没有明细，无法生成发货单");
+            }
+            SalesDeliveryEntity delivery = new SalesDeliveryEntity();
+            delivery.F_DeliveryCode = "SD-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            delivery.F_SalesOrderId = order.F_Id;
+            delivery.F_Customer = order.F_Customer;
+            delivery.F_DeliveryDate = DateTime.Now;
+            delivery.F_TotalMoney = order.F_TotalMoney;
+            delivery.F_Description = "由销售订单" + order.F_SalesOrderCode + "完成生成";
+            delivery.F_DeleteMark = false;
+            delivery.F_EnabledMark = false;
+            delivery.Create();
+            List<SalesDeliveryDetailEntity> deliveryDetails = new List<SalesDeliveryDetailEntity>();
+            foreach (var item in details)
+            {
+                deliveryDetails.Add(new SalesDeliveryDetailEntity
+                {
+                    F_Id = Utils.GuId(),
+                    F_DeliveryId = delivery.F_Id,
+                    F_MaterialId = item.F_MaterialId,
+                    F_NeedNum = item.F_NeedNum,
+                    F_Price = item.F_Price
+                });
+            }
+            uniwork.BeginTrans();
+            await uniwork.Insert(delivery);
+            await uniwork.Insert(deliveryDetails);
+            await repository.Update(a => a.F_Id == keyValue, a => new SalesOrderEntity
+            {
+                F_IsFinish = true,
+                F_ActualOverTime = DateTime.Now
+            });
+            uniwork.Commit();
+        }
+        /// <summary>
+        /// 递归展开BOM生成工单明细（带循环保护）
+        /// </summary>
+        private void GetBomDetail(WorkOrderDetailEntity parent, List<WorkOrderDetailEntity> list, List<string> visited)
+        {
+            var bomList = uniwork.IQueryable<BomFormEntity>(a => a.F_MaterialId == parent.F_MaterialId && a.F_BomType == 1).ToList();
+            if (bomList.Count != 0)
+            {
+                foreach (var item in bomList)
+                {
+                    if (visited.Contains(item.F_SonMaterialId))
+                    {
+                        continue;
+                    }
+                    WorkOrderDetailEntity detail = new WorkOrderDetailEntity();
+                    detail.F_MaterialId = item.F_SonMaterialId;
+                    detail.Create();
+                    detail.F_BadNum = 0;
+                    detail.F_PlanNum = parent.F_PlanNum * item.F_Num;
+                    detail.F_DoneNum = 0;
+                    detail.F_DeleteMark = false;
+                    detail.F_EnabledMark = parent.F_EnabledMark;
+                    detail.F_PlanEndTime = parent.F_PlanEndTime;
+                    detail.F_PlanStartTime = parent.F_PlanStartTime;
+                    detail.F_Description = parent.F_Description;
+                    detail.F_WorkOrderId = parent.F_WorkOrderId;
+                    detail.F_RunSort = parent.F_RunSort - 1;
+                    detail.F_WorkOrderState = 0;
+                    list.Add(detail);
+                    var childVisited = new List<string>(visited);
+                    childVisited.Add(item.F_SonMaterialId);
+                    GetBomDetail(detail, list, childVisited);
+                }
+            }
+            else
+            {
+                list.Remove(parent);
+            }
         }
         #endregion
     }

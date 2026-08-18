@@ -69,10 +69,19 @@ namespace WaterCloud.Service.MaterialManage
         public async Task SubmitForm(BomFormEntity entity, string listData)
         {
             uniwork.BeginTrans();
-            await repository.Delete(a => a.F_BomType == 1 && a.F_MaterialId == entity.F_MaterialId && a.F_ProcessId==entity.F_ProcessId);
+            List<BomFormEntity> list = null;
             if (!string.IsNullOrEmpty(listData))
             {
-                var list = listData.ToList<BomFormEntity>();
+                list = listData.ToList<BomFormEntity>();
+                if (list.Any(a => a.F_SonMaterialId == a.F_MaterialId))
+                    throw new Exception("bom构物料异常");
+                //循环引用检测
+                if (CheckBomCycle(entity.F_MaterialId, entity.F_ProcessId, list))
+                    throw new Exception("BOM构成存在循环引用，子料号不能是其自身的上层料号，保存失败");
+            }
+            await repository.Delete(a => a.F_BomType == 1 && a.F_MaterialId == entity.F_MaterialId && a.F_ProcessId==entity.F_ProcessId);
+            if (list != null)
+            {
                 foreach (var item in list)
                 {
                     item.Create();
@@ -84,6 +93,47 @@ namespace WaterCloud.Service.MaterialManage
                 await repository.Insert(list);
             }
             uniwork.Commit();
+        }
+        /// <summary>
+        /// 循环引用检测：模拟删除被替换记录+插入新构成后的BOM图，存在环则返回true
+        /// </summary>
+        private bool CheckBomCycle(string parentId, string processId, List<BomFormEntity> newList)
+        {
+            var all = uniwork.IQueryable<BomFormEntity>(a => a.F_BomType == 1).ToList()
+                .Where(a => !(a.F_MaterialId == parentId && a.F_ProcessId == processId)).ToList();
+            Dictionary<string, List<string>> graph = new Dictionary<string, List<string>>();
+            foreach (var b in all)
+            {
+                if (!graph.ContainsKey(b.F_MaterialId)) graph[b.F_MaterialId] = new List<string>();
+                if (!graph[b.F_MaterialId].Contains(b.F_SonMaterialId)) graph[b.F_MaterialId].Add(b.F_SonMaterialId);
+            }
+            if (!graph.ContainsKey(parentId)) graph[parentId] = new List<string>();
+            foreach (var item in newList)
+            {
+                if (!graph[parentId].Contains(item.F_SonMaterialId)) graph[parentId].Add(item.F_SonMaterialId);
+            }
+            Dictionary<string, int> state = new Dictionary<string, int>();
+            foreach (var node in graph.Keys.ToList())
+            {
+                if (BomDfs(graph, node, state)) return true;
+            }
+            return false;
+        }
+        private bool BomDfs(Dictionary<string, List<string>> graph, string node, Dictionary<string, int> state)
+        {
+            if (!state.ContainsKey(node)) state[node] = 0;
+            if (state[node] == 1) return true;
+            if (state[node] == 2) return false;
+            state[node] = 1;
+            if (graph.ContainsKey(node))
+            {
+                foreach (var next in graph[node])
+                {
+                    if (BomDfs(graph, next, state)) return true;
+                }
+            }
+            state[node] = 2;
+            return false;
         }
         #endregion
 

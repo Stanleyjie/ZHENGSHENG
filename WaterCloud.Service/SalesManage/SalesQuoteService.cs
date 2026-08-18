@@ -36,7 +36,8 @@ namespace WaterCloud.Service.SalesManage
 
         public async Task<List<SalesQuoteEntity>> GetLookList(SoulPage<SalesQuoteEntity> pagination, string keyword = "")
         {
-            var query = IQueryable().Where(t => t.F_DeleteMark == false);
+            //已审核流转到销售订单的报价单不再显示
+            var query = IQueryable().Where(t => t.F_DeleteMark == false && (t.F_QuoteState == null || t.F_QuoteState != 1));
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(t => t.F_QuoteCode.Contains(keyword)
@@ -67,6 +68,8 @@ namespace WaterCloud.Service.SalesManage
                     F_NeedNum = b.F_NeedNum,
                     F_QuoteCode = a.F_QuoteCode,
                     F_QuoteDate = a.F_QuoteDate,
+                    F_QuoteState = a.F_QuoteState,
+                    F_SalesOrderId = a.F_SalesOrderId,
                     F_TotalMoney = a.F_TotalMoney
                 });
             return query;
@@ -112,6 +115,10 @@ namespace WaterCloud.Service.SalesManage
             }
             if (string.IsNullOrEmpty(keyValue))
             {
+                if (string.IsNullOrEmpty(entity.F_QuoteCode))
+                {
+                    entity.F_QuoteCode = "QT-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                }
                 entity.F_DeleteMark = false;
                 entity.F_EnabledMark = false;
                 entity.Create();
@@ -146,6 +153,64 @@ namespace WaterCloud.Service.SalesManage
             uniwork.BeginTrans();
             await repository.Delete(a => keyValue == a.F_Id);
             await uniwork.Delete<SalesQuoteDetailEntity>(a => keyValue == a.F_QuoteId);
+            uniwork.Commit();
+        }
+        /// <summary>
+        /// 审核通过：根据报价单生成销售订单
+        /// </summary>
+        public async Task ApproveForm(string keyValue)
+        {
+            var quote = await repository.FindEntity(keyValue);
+            if (quote == null)
+            {
+                throw new Exception("报价单不存在");
+            }
+            if (quote.F_QuoteState == 1)
+            {
+                throw new Exception("报价单已审核通过，不能重复审核");
+            }
+            if (!string.IsNullOrEmpty(quote.F_SalesOrderId))
+            {
+                throw new Exception("该报价单已生成销售订单，不能重复审核");
+            }
+            var details = uniwork.IQueryable<SalesQuoteDetailEntity>(a => a.F_QuoteId == keyValue).ToList();
+            if (details.Count == 0)
+            {
+                throw new Exception("报价单没有明细，无法审核通过");
+            }
+            //生成销售订单
+            SalesOrderEntity order = new SalesOrderEntity();
+            order.F_SalesOrderCode = "SO-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            order.F_Customer = quote.F_Customer;
+            order.F_PlanStartTime = quote.F_QuoteDate ?? DateTime.Now;
+            order.F_PlanEndTime = (quote.F_QuoteDate ?? DateTime.Now).AddDays(30);
+            order.F_DayNum = 6;
+            order.F_TotalMoney = quote.F_TotalMoney;
+            order.F_Description = "由报价单" + quote.F_QuoteCode + "审核生成";
+            order.F_DeleteMark = false;
+            order.F_EnabledMark = false;
+            order.F_IsFinish = false;
+            order.Create();
+            List<SalesOrderDetailEntity> orderDetails = new List<SalesOrderDetailEntity>();
+            foreach (var item in details)
+            {
+                orderDetails.Add(new SalesOrderDetailEntity
+                {
+                    F_Id = Utils.GuId(),
+                    F_SalesOrderId = order.F_Id,
+                    F_MaterialId = item.F_MaterialId,
+                    F_NeedNum = item.F_NeedNum,
+                    F_Price = item.F_Price
+                });
+            }
+            uniwork.BeginTrans();
+            await uniwork.Insert(order);
+            await uniwork.Insert(orderDetails);
+            await repository.Update(a => a.F_Id == keyValue, a => new SalesQuoteEntity
+            {
+                F_QuoteState = 1,
+                F_SalesOrderId = order.F_Id
+            });
             uniwork.Commit();
         }
         #endregion

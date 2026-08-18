@@ -36,7 +36,8 @@ namespace WaterCloud.Service.PurchaseManage
 
         public async Task<List<PurchaseInquiryEntity>> GetLookList(SoulPage<PurchaseInquiryEntity> pagination, string keyword = "")
         {
-            var query = IQueryable().Where(t => t.F_DeleteMark == false);
+            //已审核流转到采购订单的询价单不再显示
+            var query = IQueryable().Where(t => t.F_DeleteMark == false && (t.F_QuoteState == null || t.F_QuoteState != 1));
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(t => t.F_InquiryCode.Contains(keyword)
@@ -67,6 +68,8 @@ namespace WaterCloud.Service.PurchaseManage
                     F_NeedNum = b.F_NeedNum,
                     F_InquiryCode = a.F_InquiryCode,
                     F_InquiryDate = a.F_InquiryDate,
+                    F_QuoteState = a.F_QuoteState,
+                    F_PurchaseOrderId = a.F_PurchaseOrderId,
                     F_TotalMoney = a.F_TotalMoney
                 });
             return query;
@@ -112,6 +115,10 @@ namespace WaterCloud.Service.PurchaseManage
             }
             if (string.IsNullOrEmpty(keyValue))
             {
+                if (string.IsNullOrEmpty(entity.F_InquiryCode))
+                {
+                    entity.F_InquiryCode = "QI-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                }
                 entity.F_DeleteMark = false;
                 entity.F_EnabledMark = false;
                 entity.Create();
@@ -146,6 +153,63 @@ namespace WaterCloud.Service.PurchaseManage
             uniwork.BeginTrans();
             await repository.Delete(a => keyValue == a.F_Id);
             await uniwork.Delete<PurchaseInquiryDetailEntity>(a => keyValue == a.F_InquiryId);
+            uniwork.Commit();
+        }
+        /// <summary>
+        /// 审核通过：根据采购询价单生成采购订单
+        /// </summary>
+        public async Task ApproveForm(string keyValue)
+        {
+            var inquiry = await repository.FindEntity(keyValue);
+            if (inquiry == null)
+            {
+                throw new Exception("询价单不存在");
+            }
+            if (inquiry.F_QuoteState == 1)
+            {
+                throw new Exception("询价单已审核通过，不能重复审核");
+            }
+            if (!string.IsNullOrEmpty(inquiry.F_PurchaseOrderId))
+            {
+                throw new Exception("该询价单已生成采购订单，不能重复审核");
+            }
+            var details = uniwork.IQueryable<PurchaseInquiryDetailEntity>(a => a.F_InquiryId == keyValue).ToList();
+            if (details.Count == 0)
+            {
+                throw new Exception("询价单没有明细，无法审核通过");
+            }
+            PurchaseOrderEntity order = new PurchaseOrderEntity();
+            order.F_PurchaseOrderCode = "PO-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            order.F_Supplier = inquiry.F_Supplier;
+            order.F_PlanStartTime = inquiry.F_InquiryDate ?? DateTime.Now;
+            order.F_PlanEndTime = (inquiry.F_InquiryDate ?? DateTime.Now).AddDays(30);
+            order.F_DayNum = 6;
+            order.F_TotalMoney = inquiry.F_TotalMoney;
+            order.F_Description = "由询价单" + inquiry.F_InquiryCode + "审核生成";
+            order.F_DeleteMark = false;
+            order.F_EnabledMark = false;
+            order.F_IsFinish = false;
+            order.Create();
+            List<PurchaseOrderDetailEntity> orderDetails = new List<PurchaseOrderDetailEntity>();
+            foreach (var item in details)
+            {
+                orderDetails.Add(new PurchaseOrderDetailEntity
+                {
+                    F_Id = Utils.GuId(),
+                    F_PurchaseOrderId = order.F_Id,
+                    F_MaterialId = item.F_MaterialId,
+                    F_NeedNum = item.F_NeedNum,
+                    F_Price = item.F_Price
+                });
+            }
+            uniwork.BeginTrans();
+            await uniwork.Insert(order);
+            await uniwork.Insert(orderDetails);
+            await repository.Update(a => a.F_Id == keyValue, a => new PurchaseInquiryEntity
+            {
+                F_QuoteState = 1,
+                F_PurchaseOrderId = order.F_Id
+            });
             uniwork.Commit();
         }
         #endregion

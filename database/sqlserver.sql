@@ -5589,7 +5589,10 @@ CREATE TABLE [dbo].[mes_WorkOrder] (
   [F_DeleteTime] datetime2(7)  NULL,
   [F_DeleteUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
   [F_SplitType] int DEFAULT 0 NOT NULL,
-  [F_WorkPlanId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL
+  [F_WorkPlanId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_SalesOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_SalesOrderCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
+  [F_SalesOrderDetailId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL
 )
 GO
 
@@ -12886,6 +12889,8 @@ CREATE TABLE [dbo].[mes_SalesQuote] (
   [F_TotalMoney] float(53) NULL,
   [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
   [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
+  [F_QuoteState] int DEFAULT 0 NOT NULL,
+  [F_SalesOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
   [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
   [F_CreatorTime] datetime2(7) NULL,
   [F_CreatorUserId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
@@ -12961,6 +12966,7 @@ CREATE TABLE [dbo].[mes_SalesReturn] (
   [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
   [F_ReturnCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
   [F_SalesOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_DeliveryId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
   [F_Customer] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
   [F_ReturnDate] datetime2(7) NOT NULL,
   [F_TotalMoney] float(53) NULL,
@@ -13029,6 +13035,8 @@ CREATE TABLE [dbo].[mes_PurchaseInquiry] (
   [F_Supplier] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
   [F_InquiryDate] datetime2(7) NOT NULL,
   [F_TotalMoney] float(53) NULL,
+  [F_QuoteState] int DEFAULT 0 NOT NULL,
+  [F_PurchaseOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS  NULL,
   [F_DeleteMark] tinyint DEFAULT 0 NOT NULL,
   [F_EnabledMark] tinyint DEFAULT 1 NOT NULL,
   [F_Description] nvarchar(max) COLLATE Chinese_PRC_CI_AS NULL,
@@ -13106,6 +13114,7 @@ CREATE TABLE [dbo].[mes_PurchaseReturn] (
   [F_Id] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
   [F_ReturnCode] nvarchar(50) COLLATE Chinese_PRC_CI_AS NOT NULL,
   [F_PurchaseOrderId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
+  [F_ReceiveId] nvarchar(50) COLLATE Chinese_PRC_CI_AS NULL,
   [F_Supplier] nvarchar(200) COLLATE Chinese_PRC_CI_AS NULL,
   [F_ReturnDate] datetime2(7) NOT NULL,
   [F_TotalMoney] float(53) NULL,

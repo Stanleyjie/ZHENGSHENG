@@ -109,7 +109,11 @@
         });
         function initControl() {
             //绑定数据源
-            //类型为下拉框时
+            layui.$('#F_Supplier').bindSelect({
+                url: "/PurchaseManage/PurchaseOrder/GetSupplierListJson",
+                id: "F_SupplierName",
+                text: "F_SupplierName"
+            });
         }
 
         //监听提交
@@ -140,10 +144,12 @@
                             <input type="text" id="F_PurchaseOrderCode" name="F_PurchaseOrderCode" autocomplete="off" maxlength="50" lay-verify="required" placeholder="请输入采购订单编号" class="layui-input">
                         </div>
                     </div>
-                    <div class="layui-col-md6 layui-col-sm6 layui-hide">
+                    <div class="layui-col-md6 layui-col-sm6">
                         <label class="layui-form-label">供应商</label>
                         <div class="layui-input-block">
-                            <input id="F_Supplier" name="F_Supplier" type="text" maxlength="50" autocomplete="off" placeholder="请输入供应商" class="layui-input"/>
+                            <select id="F_Supplier" name="F_Supplier" lay-search>
+                                <option value="">请选择供应商</option>
+                            </select>
                         </div>
                     </div>
                 </div>

@@ -64,7 +64,8 @@ namespace WaterCloud.Service.PurchaseManage
 
         public async Task<List<PurchaseOrderEntity>> GetLookList(SoulPage<PurchaseOrderEntity> pagination, string keyword = "", string id = "")
         {
-            var query = IQueryable().Where(t => t.F_DeleteMark == false);
+            //已流转到采购收货单的订单不再显示
+            var query = IQueryable().Where(t => t.F_DeleteMark == false && (t.F_IsFinish == null || t.F_IsFinish == false));
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(t => t.F_PurchaseOrderCode.Contains(keyword)
@@ -151,6 +152,10 @@ namespace WaterCloud.Service.PurchaseManage
             }
             if (string.IsNullOrEmpty(keyValue))
             {
+                if (string.IsNullOrEmpty(entity.F_PurchaseOrderCode))
+                {
+                    entity.F_PurchaseOrderCode = "PO-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                }
                 //初始值添加
                 entity.F_DeleteMark = false;
                 entity.F_EnabledMark = false;
@@ -233,6 +238,65 @@ namespace WaterCloud.Service.PurchaseManage
             {
                 F_EnabledMark = true
             });
+        }
+        /// <summary>
+        /// 完成订单：根据采购订单生成采购收货单，并标记订单完成
+        /// </summary>
+        public async Task FinishForm(string keyValue)
+        {
+            var order = await repository.FindEntity(keyValue);
+            if (order == null)
+            {
+                throw new Exception("采购订单不存在");
+            }
+            if (order.F_EnabledMark != true)
+            {
+                throw new Exception("请先启用采购订单，再生成收货单");
+            }
+            if (order.F_IsFinish == true)
+            {
+                throw new Exception("采购订单已完成，不能重复生成收货单");
+            }
+            if (uniwork.IQueryable<PurchaseReceiveEntity>(a => a.F_PurchaseOrderId == keyValue && a.F_DeleteMark == false).Any())
+            {
+                throw new Exception("该采购订单已生成过收货单");
+            }
+            var details = uniwork.IQueryable<PurchaseOrderDetailEntity>(a => a.F_PurchaseOrderId == keyValue).ToList();
+            if (details.Count == 0)
+            {
+                throw new Exception("采购订单没有明细，无法生成收货单");
+            }
+            PurchaseReceiveEntity receive = new PurchaseReceiveEntity();
+            receive.F_ReceiveCode = "PR-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            receive.F_PurchaseOrderId = order.F_Id;
+            receive.F_Supplier = order.F_Supplier;
+            receive.F_ReceiveDate = DateTime.Now;
+            receive.F_TotalMoney = order.F_TotalMoney;
+            receive.F_Description = "由采购订单" + order.F_PurchaseOrderCode + "完成生成";
+            receive.F_DeleteMark = false;
+            receive.F_EnabledMark = false;
+            receive.Create();
+            List<PurchaseReceiveDetailEntity> receiveDetails = new List<PurchaseReceiveDetailEntity>();
+            foreach (var item in details)
+            {
+                receiveDetails.Add(new PurchaseReceiveDetailEntity
+                {
+                    F_Id = Utils.GuId(),
+                    F_ReceiveId = receive.F_Id,
+                    F_MaterialId = item.F_MaterialId,
+                    F_NeedNum = item.F_NeedNum,
+                    F_Price = item.F_Price
+                });
+            }
+            uniwork.BeginTrans();
+            await uniwork.Insert(receive);
+            await uniwork.Insert(receiveDetails);
+            await repository.Update(a => a.F_Id == keyValue, a => new PurchaseOrderEntity
+            {
+                F_IsFinish = true,
+                F_ActualOverTime = DateTime.Now
+            });
+            uniwork.Commit();
         }
         #endregion
     }

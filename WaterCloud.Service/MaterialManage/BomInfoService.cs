@@ -72,8 +72,11 @@ namespace WaterCloud.Service.MaterialManage
             if (!string.IsNullOrEmpty(listData))
             {
                 var list = listData.ToList<BomFormEntity>();
-                if (list.Any(a=>a.F_SonMaterialId == a.F_MaterialId))
+                if (list.Any(a => a.F_SonMaterialId == a.F_MaterialId))
                     throw new Exception("bom构物料异常");
+                //循环引用检测
+                if (CheckBomCycle(entity.F_MaterialId, entity.F_ProcessId, list))
+                    throw new Exception("BOM构成存在循环引用，子料号不能是其自身的上层料号，保存失败");
                 foreach (var item in list)
                 {
                     item.Create();
@@ -86,6 +89,87 @@ namespace WaterCloud.Service.MaterialManage
                 await repository.Insert(list);
             }
             uniwork.Commit();
+        }
+        /// <summary>
+        /// 循环引用检测：模拟删除被替换记录+插入新构成后的BOM图，存在环则返回true
+        /// </summary>
+        private bool CheckBomCycle(string parentId, string processId, List<BomFormEntity> newList)
+        {
+            var all = uniwork.IQueryable<BomFormEntity>(a => a.F_BomType == 1).ToList()
+                .Where(a => !(a.F_MaterialId == parentId && a.F_ProcessId == processId)).ToList();
+            Dictionary<string, List<string>> graph = new Dictionary<string, List<string>>();
+            foreach (var b in all)
+            {
+                if (!graph.ContainsKey(b.F_MaterialId)) graph[b.F_MaterialId] = new List<string>();
+                if (!graph[b.F_MaterialId].Contains(b.F_SonMaterialId)) graph[b.F_MaterialId].Add(b.F_SonMaterialId);
+            }
+            if (!graph.ContainsKey(parentId)) graph[parentId] = new List<string>();
+            foreach (var item in newList)
+            {
+                if (!graph[parentId].Contains(item.F_SonMaterialId)) graph[parentId].Add(item.F_SonMaterialId);
+            }
+            Dictionary<string, int> state = new Dictionary<string, int>();
+            foreach (var node in graph.Keys.ToList())
+            {
+                if (BomDfs(graph, node, state)) return true;
+            }
+            return false;
+        }
+        private bool BomDfs(Dictionary<string, List<string>> graph, string node, Dictionary<string, int> state)
+        {
+            if (!state.ContainsKey(node)) state[node] = 0;
+            if (state[node] == 1) return true;
+            if (state[node] == 2) return false;
+            state[node] = 1;
+            if (graph.ContainsKey(node))
+            {
+                foreach (var next in graph[node])
+                {
+                    if (BomDfs(graph, next, state)) return true;
+                }
+            }
+            state[node] = 2;
+            return false;
+        }
+        /// <summary>
+        /// 获取BOM树（递归展开，dtree格式）
+        /// </summary>
+        public async Task<List<TreeGridModel>> GetBomTree(string keyValue)
+        {
+            List<TreeGridModel> treeList = new List<TreeGridModel>();
+            var material = await uniwork.FindEntity<MaterialEntity>(keyValue);
+            if (material == null)
+            {
+                return treeList;
+            }
+            treeList.Add(new TreeGridModel { id = material.F_Id, parentId = "0", title = material.F_MaterialCode + " " + material.F_MaterialName });
+            BuildBomTree(treeList, material.F_Id, new List<string> { material.F_Id });
+            return treeList;
+        }
+        private void BuildBomTree(List<TreeGridModel> treeList, string parentId, List<string> visited)
+        {
+            var bomList = uniwork.IQueryable<BomFormEntity>(a => a.F_MaterialId == parentId && a.F_BomType == 1).ToList();
+            foreach (var item in bomList)
+            {
+                if (visited.Contains(item.F_SonMaterialId))
+                {
+                    continue;
+                }
+                var child = uniwork.FindEntity<MaterialEntity>(item.F_SonMaterialId).GetAwaiter().GetResult();
+                if (child == null)
+                {
+                    continue;
+                }
+                treeList.Add(new TreeGridModel
+                {
+                    id = child.F_Id,
+                    parentId = parentId,
+                    title = child.F_MaterialCode + " " + child.F_MaterialName + "  x" + item.F_Num
+                });
+                var childVisited = new List<string>(visited);
+                childVisited.Add(child.F_Id);
+                BuildBomTree(treeList, child.F_Id, childVisited);
+            }
         }
         public async Task DeleteForm(string itemId, string keyValue)
         {

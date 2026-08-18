@@ -26,6 +26,11 @@ namespace WaterCloud.Web.Areas.MaterialManage.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public virtual ActionResult Tree()
+        {
+            return View();
+        }
         #region 获取数据
         [HttpGet]
         [HandlerAjaxOnly]
@@ -33,6 +38,14 @@ namespace WaterCloud.Web.Areas.MaterialManage.Controllers
         {
             var data = await _service.GetLookList(itemId);
             return Success(data.Count, data);
+        }
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetBomTree(string keyValue)
+        {
+            var data = await _service.GetBomTree(keyValue);
+            return DTreeResult(data.TreeList());
         }
 
         [HttpGet]

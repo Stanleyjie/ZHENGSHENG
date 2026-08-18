@@ -24,6 +24,10 @@ namespace WaterCloud.Domain.SalesManage
         /// </summary>
         public string F_SalesOrderId { get; set; }
         /// <summary>
+        /// 关联销售发货单Id
+        /// </summary>
+        public string F_DeliveryId { get; set; }
+        /// <summary>
         /// 客户
         /// </summary>
         public string F_Customer { get; set; }

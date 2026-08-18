@@ -109,7 +109,11 @@
         });
         function initControl() {
             //绑定数据源
-            //类型为下拉框时
+            layui.$('#F_Customer').bindSelect({
+                url: "/SalesManage/SalesOrder/GetCustomerListJson",
+                id: "F_CustomerName",
+                text: "F_CustomerName"
+            });
         }
 
         //监听提交
@@ -140,10 +144,12 @@
                             <input type="text" id="F_SalesOrderCode" name="F_SalesOrderCode" autocomplete="off" maxlength="50" lay-verify="required" placeholder="请输入销售订单编号" class="layui-input">
                         </div>
                     </div>
-                    <div class="layui-col-md6 layui-col-sm6 layui-hide">
+                    <div class="layui-col-md6 layui-col-sm6">
                         <label class="layui-form-label">客户</label>
                         <div class="layui-input-block">
-                            <input id="F_Customer" name="F_Customer" type="text" maxlength="50" autocomplete="off" placeholder="请输入客户" class="layui-input"/>
+                            <select id="F_Customer" name="F_Customer" lay-search>
+                                <option value="">请选择客户</option>
+                            </select>
                         </div>
                     </div>
                 </div>

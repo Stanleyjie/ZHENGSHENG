@@ -23,24 +23,16 @@
         wcLoading.close();
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-            common.submitForm({
-                url: "/RunMonitor/EqpScanScreen/CheckPassword",
-                param: { password: $.md5($.trim($('#password').val()))  },
-                success: function () {
-                    localStorage.setItem("currentEqp", data.field.EqpId);
-                    parent.keyValue = data.field.EqpId;
-                    parent.getData();
-                }
-            })
+            localStorage.setItem("currentEqp", data.field.EqpId);
+            parent.keyValue = data.field.EqpId;
+            parent.getData();
+            common.modalClose();
             return false;
         });
     });
 </script>
 <div class="layui-form select_option_to_layer" lay-filter="adminform">
     <div style="margin: 25px; margin-left: 40px; margin-right: 40px;">
-        <div class="layui-form-item required">
-            <input type="password" id="password" lay-verify="required|password" placeholder="密码" autocomplete="off" class="layui-input">
-        </div>
         <div class="layui-form-item required">
             <select id="EqpId" name="EqpId" lay-verify="required">
             </select>

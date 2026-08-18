@@ -31,6 +31,14 @@ namespace WaterCloud.Domain.PurchaseManage
         /// 总金额
         /// </summary>
         public float? F_TotalMoney { get; set; }
+        /// <summary>
+        /// 审核状态 0=待审核 1=已审核
+        /// </summary>
+        public int? F_QuoteState { get; set; }
+        /// <summary>
+        /// 审核通过后生成的采购订单Id
+        /// </summary>
+        public string F_PurchaseOrderId { get; set; }
         public bool? F_DeleteMark { get; set; }
         public bool? F_EnabledMark { get; set; }
         public string F_Description { get; set; }

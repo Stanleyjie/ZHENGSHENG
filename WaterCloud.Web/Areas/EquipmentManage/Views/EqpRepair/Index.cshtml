@@ -162,58 +162,28 @@
                 {
                     field: 'F_Status', title: '状态', width: 140, sort: true, filter: true,
                     templet: function (d) {
-                        if (d.F_Status == 1) {
-                            return "<span class='layui-btn layui-btn-danger layui-btn-xs'>报修等待派工</span>";
-                        }
-                        if (d.F_Status == 2) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>已派工</span>";
-                        }
-                        if (d.F_Status == 3) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>正在维修</span>";
-                        }
-                        if (d.F_Status == 4) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>维修完成等待确认</span>";
-                        }
-                        if (d.F_Status == 99) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>关闭</span>";
-                        }
-
+                        var map = { 1: "报修等待派工", "报修等待派工": "报修等待派工", 2: "已派工", "已派工": "已派工", 3: "正在维修", "维修中": "正在维修", 4: "维修完成等待确认", "维修完成等待确认": "维修完成等待确认", 99: "关闭", "关闭": "关闭", "已完成": "已完成" };
+                        var name = map[d.F_Status] == null ? d.F_Status : map[d.F_Status];
+                        if (name == null || name == "") { return ""; }
+                        return "<span class='layui-btn layui-btn-normal layui-btn-xs'>" + name + "</span>";
                     }
                 },
                 { field: 'F_EqpName', title: '工位', width: 100, sort: true, filter: true },
                 {
                     field: 'F_ProblemType', title: '故障分类', width: 110, sort: true, filter: true,
                     templet: function (d) {
-                        if (d.F_ProblemType == 1) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>人</span>";
-                        }
-                        if (d.F_ProblemType == 2) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>机</span>";
-                        }
-                        if (d.F_ProblemType == 3) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>料</span>";
-                        }
-                        if (d.F_ProblemType == 4) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>法</span>";
-                        }
-                        if (d.F_ProblemType == 5) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>环</span>";
-                        }
-
+                        var map = { 1: "人", 2: "机", 3: "料", 4: "法", 5: "环", 6: "测" };
+                        var name = map[d.F_ProblemType] == null ? d.F_ProblemType : map[d.F_ProblemType];
+                        if (name == null || name == "") { return ""; }
+                        return "<span class='layui-btn layui-btn-normal layui-btn-xs'>" + name + "</span>";
                     }
                 },
                 {
                     field: 'F_ProblemClass', title: '故障等级', width: 110, sort: true, filter: true,
                     templet: function (d) {
-                        if (d.F_ProblemClass == 1) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>低</span>";
-                        }
-                        if (d.F_ProblemClass == 2) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>中</span>";
-                        }
-                        if (d.F_ProblemClass == 3) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>高</span>";
-                        }
+                        var name = d.F_ProblemClass;
+                        if (name == null || name == "") { return ""; }
+                        return "<span class='layui-btn layui-btn-normal layui-btn-xs'>" + name + "</span>";
                     }
                 },
                 { field: 'F_ProblemDesc', title: '故障描述', width: 110, sort: true, filter: true },
@@ -248,15 +218,10 @@
                 {
                     field: 'F_Status', title: '状态', width: 90, sort: true, filter: true,
                     templet: function (d) {
-                        if (d.F_Status == 1) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>派工</span>";
-                        }
-                        if (d.F_Status == 2) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>维修中</span>";
-                        }
-                        if (d.F_Status == 99) {
-                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>维修结束</span>";
-                        }
+                        var map = { 1: "派工", "派工": "派工", 2: "维修中", "维修中": "维修中", 99: "维修结束", "维修完成": "维修完成", "已完成": "已完成" };
+                        var name = map[d.F_Status] == null ? d.F_Status : map[d.F_Status];
+                        if (name == null || name == "") { return ""; }
+                        return "<span class='layui-btn layui-btn-normal layui-btn-xs'>" + name + "</span>";
                     }
                 },
                 {

@@ -26,6 +26,7 @@
                  <button id="NF-add" name="NF-add" authorize class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe654;</i>新增</button>
                  <button id="NF-edit" name="NF-edit" authorize class="layui-btn layui-btn-sm layui-btn-warm layui-hide" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</button>
                  <button id="NF-delete" name="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger layui-hide" lay-event="delete"> <i class="layui-icon">&#xe640;</i>删除</button>
+                 <button id="NF-return" name="NF-return" authorize class="layui-btn layui-btn-sm layui-btn-danger layui-hide" lay-event="return"> <i class="fa fa-undo"></i>退货</button>
                  <button id="NF-details" name="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal layui-hide" lay-event="details"> <i class="layui-icon">&#xe60b;</i>查看</button>
              </div>
          </script>
@@ -33,6 +34,7 @@
          <script type="text/html" id="currentTableBar">
              <a id="NF-edit" authorize class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
              <a id="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete"><i class="layui-icon">&#xe640;</i></a>
+             <a id="NF-return" authorize class="layui-btn layui-btn-sm layui-btn-danger" lay-event="return"><i class="fa fa-undo"></i></a>
              <a id="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal" lay-event="details"><i class="layui-icon">&#xe60b;</i></a>
          </script>
      </div>
@@ -66,7 +68,7 @@
              return false;
          });
          wcLoading.close();
-         var oneList = ["NF-edit", "NF-details", "NF-delete"];
+         var oneList = ["NF-edit", "NF-details", "NF-delete", "NF-return"];
          commonTable.tableRowClick("radio", "currentTableFilter", "currentTableId", oneList);
          table.on('toolbar(currentTableFilter)', function (obj) { 
              var data = table.checkStatus('currentTableId').data;
@@ -84,11 +86,23 @@
                 if (data.length == 0) { common.modalMsg("未选中数据", "warning"); return false; }
                 common.modalOpen({ title: "编辑采购收货单", url: "/PurchaseManage/PurchaseReceive/Form?keyValue=" + id, width: "780px", height: "680px" });
            }
-           else if (obj.event === 'details') {
-                if (data.length == 0) { common.modalMsg("未选中数据", "warning"); return false; }
-                common.modalOpen({ title: "查看采购收货单", url: "/PurchaseManage/PurchaseReceive/Details?keyValue=" + id, width: "780px", height: "680px", btn: [] });
-             }
-           else if (obj.event === 'TABLE_SEARCH') {
+            else if (obj.event === 'details') {
+                 if (data.length == 0) { common.modalMsg("未选中数据", "warning"); return false; }
+                 common.modalOpen({ title: "查看采购收货单", url: "/PurchaseManage/PurchaseReceive/Details?keyValue=" + id, width: "780px", height: "680px", btn: [] });
+              }
+            else if (obj.event === 'return') {
+                 if (data.length == 0) { common.modalMsg("未选中数据", "warning"); return false; }
+                 common.submitPost({
+                     prompt: "注：确定对该收货单【退货】并生成采购退货单吗？",
+                     url: "/PurchaseManage/PurchaseReceive/ReturnForm",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                         common.openNewTabByIframe({ title: "采购退货单", href: "/PurchaseManage/PurchaseReturn/Index" });
+                     }
+                 });
+              }
+            else if (obj.event === 'TABLE_SEARCH') {
                 var _that = $("#searchField");
                 if (_that.hasClass("layui-hide")) { _that.removeClass('layui-hide'); } else { _that.addClass('layui-hide'); }
            }
@@ -102,10 +116,21 @@
             else if (obj.event === 'edit') {
                common.modalOpen({ title: "编辑采购收货单", url: "/PurchaseManage/PurchaseReceive/Form?keyValue=" + id, width: "780px", height: "680px" });
             }
-            else if (obj.event === 'details') {
-                common.modalOpen({ title: "查看采购收货单", url: "/PurchaseManage/PurchaseReceive/Details?keyValue=" + id, width: "780px", height: "680px", btn: [] });
-            }
-            return false;
-        });
-   });
- </script>
+             else if (obj.event === 'details') {
+                 common.modalOpen({ title: "查看采购收货单", url: "/PurchaseManage/PurchaseReceive/Details?keyValue=" + id, width: "780px", height: "680px", btn: [] });
+             }
+             else if (obj.event === 'return') {
+                 common.submitPost({
+                     prompt: "注：确定对该收货单【退货】并生成采购退货单吗？",
+                     url: "/PurchaseManage/PurchaseReceive/ReturnForm",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                         common.openNewTabByIframe({ title: "采购退货单", href: "/PurchaseManage/PurchaseReturn/Index" });
+                     }
+                 });
+             }
+             return false;
+         });
+    });
+  </script>

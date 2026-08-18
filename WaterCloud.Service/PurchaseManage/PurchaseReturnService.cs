@@ -76,6 +76,7 @@ namespace WaterCloud.Service.PurchaseManage
                     F_LastModifyUserId = a.F_LastModifyUserId,
                     F_NeedNum = b.F_NeedNum,
                     F_PurchaseOrderId = a.F_PurchaseOrderId,
+                    F_ReceiveId = a.F_ReceiveId,
                     F_ReturnCode = a.F_ReturnCode,
                     F_ReturnDate = a.F_ReturnDate,
                     F_TotalMoney = a.F_TotalMoney

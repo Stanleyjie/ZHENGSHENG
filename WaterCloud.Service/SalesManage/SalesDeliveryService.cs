@@ -46,7 +46,9 @@ namespace WaterCloud.Service.SalesManage
 
         public async Task<List<SalesDeliveryEntity>> GetLookList(SoulPage<SalesDeliveryEntity> pagination, string keyword = "")
         {
-            var query = IQueryable().Where(t => t.F_DeleteMark == false);
+            //已流转到销售退货单的发货单不再显示
+            var returnedIds = uniwork.IQueryable<SalesReturnEntity>(a => a.F_DeleteMark == false && a.F_DeliveryId != null).Select(a => a.F_DeliveryId).Distinct().ToList();
+            var query = IQueryable().Where(t => t.F_DeleteMark == false && !returnedIds.Contains(t.F_Id));
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(t => t.F_DeliveryCode.Contains(keyword)
@@ -161,6 +163,53 @@ namespace WaterCloud.Service.SalesManage
             uniwork.BeginTrans();
             await repository.Delete(a => keyValue == a.F_Id);
             await uniwork.Delete<SalesDeliveryDetailEntity>(a => keyValue == a.F_DeliveryId);
+            uniwork.Commit();
+        }
+        /// <summary>
+        /// 退货：根据销售发货单生成销售退货单
+        /// </summary>
+        public async Task ReturnForm(string keyValue)
+        {
+            var delivery = await repository.FindEntity(keyValue);
+            if (delivery == null)
+            {
+                throw new Exception("发货单不存在");
+            }
+            if (uniwork.IQueryable<SalesReturnEntity>(a => a.F_DeliveryId == keyValue && a.F_DeleteMark == false).Any())
+            {
+                throw new Exception("该发货单已生成过退货单");
+            }
+            var details = uniwork.IQueryable<SalesDeliveryDetailEntity>(a => a.F_DeliveryId == keyValue).ToList();
+            if (details.Count == 0)
+            {
+                throw new Exception("发货单没有明细，无法退货");
+            }
+            SalesReturnEntity returnEntity = new SalesReturnEntity();
+            returnEntity.F_ReturnCode = "SR-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            returnEntity.F_SalesOrderId = delivery.F_SalesOrderId;
+            returnEntity.F_DeliveryId = delivery.F_Id;
+            returnEntity.F_Customer = delivery.F_Customer;
+            returnEntity.F_ReturnDate = DateTime.Now;
+            returnEntity.F_TotalMoney = delivery.F_TotalMoney;
+            returnEntity.F_Description = "由发货单" + delivery.F_DeliveryCode + "退货生成";
+            returnEntity.F_DeleteMark = false;
+            returnEntity.F_EnabledMark = false;
+            returnEntity.Create();
+            List<SalesReturnDetailEntity> returnDetails = new List<SalesReturnDetailEntity>();
+            foreach (var item in details)
+            {
+                returnDetails.Add(new SalesReturnDetailEntity
+                {
+                    F_Id = Utils.GuId(),
+                    F_ReturnId = returnEntity.F_Id,
+                    F_MaterialId = item.F_MaterialId,
+                    F_NeedNum = item.F_NeedNum,
+                    F_Price = item.F_Price
+                });
+            }
+            uniwork.BeginTrans();
+            await uniwork.Insert(returnEntity);
+            await uniwork.Insert(returnDetails);
             uniwork.Commit();
         }
         #endregion

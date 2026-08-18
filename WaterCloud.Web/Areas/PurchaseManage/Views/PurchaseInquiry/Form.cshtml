@@ -19,6 +19,11 @@
         common.authorizeFields('adminform');
         var listData = [];
         $(function () {
+            layui.$('#F_Supplier').bindSelect({
+                url: "/PurchaseManage/PurchaseOrder/GetSupplierListJson",
+                id: "F_SupplierName",
+                text: "F_SupplierName"
+            });
             if (!!keyValue) {
                 common.ajax({
                     url: '/PurchaseManage/PurchaseInquiry/GetFormJson',
@@ -107,7 +112,9 @@
                     <div class="layui-col-md6 layui-col-sm6">
                         <label class="layui-form-label required">供应商</label>
                         <div class="layui-input-block">
-                            <input id="F_Supplier" name="F_Supplier" type="text" maxlength="100" autocomplete="off" lay-verify="required" placeholder="请输入供应商" class="layui-input"/>
+                            <select id="F_Supplier" name="F_Supplier" lay-search lay-verify="required">
+                                <option value="">请选择供应商</option>
+                            </select>
                         </div>
                     </div>
                 </div>

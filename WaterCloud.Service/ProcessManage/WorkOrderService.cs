@@ -200,7 +200,10 @@ namespace WaterCloud.Service.ProcessManage
                     F_MaterialName = b.F_MaterialName,
                     F_MaterialSize = b.F_MaterialSize,
                     F_MaterialUnit = b.F_MaterialUnit,
-                    F_SplitType=a.F_SplitType
+                    F_SplitType=a.F_SplitType,
+                    F_SalesOrderCode=a.F_SalesOrderCode,
+                    F_SalesOrderId=a.F_SalesOrderId,
+                    F_SalesOrderDetailId=a.F_SalesOrderDetailId
                 });
             return query;
         }
@@ -510,13 +513,23 @@ namespace WaterCloud.Service.ProcessManage
             //}
         }
         //递归获取bom组成
-        private void GetDetailByBom(WorkOrderDetailEntity parent, List<WorkOrderDetailEntity> list)
+        private void GetDetailByBom(WorkOrderDetailEntity parent, List<WorkOrderDetailEntity> list, HashSet<string> visited = null)
         {
+            if (visited == null)
+            {
+                visited = new HashSet<string>();
+            }
             var bomList = uniwork.IQueryable<BomFormEntity>(a => a.F_MaterialId == parent.F_MaterialId && a.F_BomType == 1).ToList();
             if (bomList.Count != 0)
             {
                 foreach (var item in bomList)
                 {
+                    //循环BOM保护
+                    if (visited.Contains(item.F_SonMaterialId))
+                    {
+                        continue;
+                    }
+                    visited.Add(item.F_SonMaterialId);
                     WorkOrderDetailEntity detail = new WorkOrderDetailEntity();
                     detail.F_MaterialId = item.F_SonMaterialId;
                     detail.Create();
@@ -532,7 +545,7 @@ namespace WaterCloud.Service.ProcessManage
                     detail.F_RunSort =parent.F_RunSort-1;
                     detail.F_WorkOrderState = 0;
                     list.Add(detail);
-                    GetDetailByBom(detail, list);
+                    GetDetailByBom(detail, list, visited);
                 }
             }
             else

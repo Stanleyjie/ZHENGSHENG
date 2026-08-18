@@ -20,6 +20,7 @@ namespace WaterCloud.Web.Areas.PurchaseManage.Controllers
     public class PurchaseOrderController : BaseController
     {
         public PurchaseOrderService _service { get; set; }
+        public PurchaseSupplierService _supplierService { get; set; }
         [HttpGet]
         public virtual ActionResult AddForm()
         {
@@ -52,6 +53,13 @@ namespace WaterCloud.Web.Areas.PurchaseManage.Controllers
         public async Task<ActionResult> GetMaterialListJson(string keyword)
         {
             var data = await _service.GetMaterialList(keyword);
+            return Content(data.ToJson());
+        }
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetSupplierListJson(string keyword)
+        {
+            var data = await _supplierService.GetList(keyword);
             return Content(data.ToJson());
         }
         [HttpGet]
@@ -121,6 +129,21 @@ namespace WaterCloud.Web.Areas.PurchaseManage.Controllers
             catch (Exception ex)
             {
                 return await Error(ex.Message, "", keyValue, DbLogType.Delete);
+            }
+        }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ServiceFilter(typeof(HandlerAuthorizeAttribute))]
+        public async Task<ActionResult> FinishForm(string keyValue)
+        {
+            try
+            {
+                await _service.FinishForm(keyValue);
+                return await Success("完成，已生成采购收货单。", "", keyValue, DbLogType.Submit);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue, DbLogType.Submit);
             }
         }
         #endregion

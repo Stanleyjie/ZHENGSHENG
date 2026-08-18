@@ -28,6 +28,8 @@
                  <button id="NF-delete" name="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger layui-hide" lay-event="delete"> <i class="layui-icon">&#xe640;</i>删除</button>
                  <button id="NF-enabled" name="NF-enabled" authorize="yes" class="layui-btn layui-btn-sm data-enabled-btn layui-hide" lay-event="enabled"> <i class="fa fa-play-circle"></i>启用</button>
                  <button id="NF-over" name="NF-enabled" authorize="yes" class="layui-btn layui-btn-sm layui-btn-danger layui-hide" lay-event="over"> <i class="layui-icon">&#x1007;</i>结案</button>
+                 <button id="NF-workorder" name="NF-workorder" authorize="yes" class="layui-btn layui-btn-sm layui-btn-normal layui-hide" lay-event="createworkorder"> <i class="fa fa-cogs"></i>生成工单</button>
+                 <button id="NF-finish" name="NF-finish" authorize="yes" class="layui-btn layui-btn-sm layui-btn-warm layui-hide" lay-event="finish"> <i class="fa fa-truck"></i>完成</button>
                  <button id="NF-details" name="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal layui-hide" lay-event="details"> <i class="layui-icon">&#xe60b;</i>查看</button>
              </div>
          </script>
@@ -37,6 +39,8 @@
              <a id="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete"><i class="layui-icon">&#xe640;</i></a>
              <a id="NF-enabled" authorize class="layui-btn layui-btn-sm" lay-event="enabled"><i class="fa fa-play-circle"></i></a>
              <a id="NF-over" authorize class="layui-btn layui-btn-sm layui-btn-danger" lay-event="over"><i class="layui-icon">&#x1007;</i></a>
+             <a id="NF-workorder" authorize class="layui-btn layui-btn-sm layui-btn-normal" lay-event="createworkorder"><i class="fa fa-cogs"></i></a>
+             <a id="NF-finish" authorize class="layui-btn layui-btn-sm layui-btn-warm" lay-event="finish"><i class="fa fa-truck"></i></a>
              <a id="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal" lay-event="details"><i class="layui-icon">&#xe60b;</i></a>
          </script>
      </div>
@@ -103,7 +107,7 @@
          });
          wcLoading.close();
          //行点击事件监听，控制按钮显示
-         var oneList = ["NF-edit", "NF-details", "NF-delete","NF-enabled"];//选择1条显示
+         var oneList = ["NF-edit", "NF-details", "NF-delete","NF-enabled","NF-workorder","NF-finish"];//选择1条显示
          commonTable.tableRowClick("radio", "currentTableFilter", "currentTableId", oneList);
          //toolbar监听事件
          table.on('toolbar(currentTableFilter)', function (obj) { 
@@ -187,7 +191,37 @@
                      }
                  });
              }
-           else if (obj.event === 'TABLE_SEARCH') {
+             else if (obj.event === 'createworkorder') {
+                 if (data.length == 0) {
+                     common.modalMsg("未选中数据", "warning");
+                     return false;
+                 }
+                 common.submitPost({
+                     prompt: "注：确定根据该销售订单【生成生产工单】吗？",
+                     url: "/SalesManage/SalesOrder/CreateWorkOrder",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                         common.openNewTabByIframe({ title: "工单管理", href: "/ProcessManage/WorkOrder/Index" });
+                     }
+                 });
+             }
+             else if (obj.event === 'finish') {
+                 if (data.length == 0) {
+                     common.modalMsg("未选中数据", "warning");
+                     return false;
+                 }
+                 common.submitPost({
+                     prompt: "注：确定【完成】该销售订单并生成销售发货单吗？",
+                     url: "/SalesManage/SalesOrder/FinishForm",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                         common.openNewTabByIframe({ title: "销售发货单", href: "/SalesManage/SalesDelivery/Index" });
+                     }
+                 });
+             }
+            else if (obj.event === 'TABLE_SEARCH') {
                 var _that = $("#searchField");
                 if (_that.hasClass("layui-hide")) {
                    _that.removeClass('layui-hide');
@@ -227,17 +261,39 @@
                     }
                 });
             }
-            else if (obj.event === 'over') {
-                common.submitPost({
-                    prompt: "注：您确定要【结案】该项订单吗？",
-                    url: "/SalesManage/SalesOrder/OverForm",
-                    param: { keyValue: id },
-                    success: function () {
-                        common.reload('data-search-btn');
-                    }
-                });
-            }
-            else if (obj.event === 'details') {
+             else if (obj.event === 'over') {
+                 common.submitPost({
+                     prompt: "注：您确定要【结案】该项订单吗？",
+                     url: "/SalesManage/SalesOrder/OverForm",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                     }
+                 });
+             }
+             else if (obj.event === 'createworkorder') {
+                 common.submitPost({
+                     prompt: "注：确定根据该销售订单【生成生产工单】吗？",
+                     url: "/SalesManage/SalesOrder/CreateWorkOrder",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                         common.openNewTabByIframe({ title: "工单管理", href: "/ProcessManage/WorkOrder/Index" });
+                     }
+                 });
+             }
+             else if (obj.event === 'finish') {
+                 common.submitPost({
+                     prompt: "注：确定【完成】该销售订单并生成销售发货单吗？",
+                     url: "/SalesManage/SalesOrder/FinishForm",
+                     param: { keyValue: id },
+                     success: function () {
+                         common.reload('data-search-btn');
+                         common.openNewTabByIframe({ title: "销售发货单", href: "/SalesManage/SalesDelivery/Index" });
+                     }
+                 });
+             }
+             else if (obj.event === 'details') {
                 common.modalOpen({
                     title: "查看界面",
                     url: "/SalesManage/SalesOrder/Details?keyValue=" + id,

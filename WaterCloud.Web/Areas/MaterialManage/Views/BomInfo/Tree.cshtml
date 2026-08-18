@@ -1,0 +1,56 @@
+@{
+    ViewBag.Title = "BOM树";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<style>
+    #toolbarDiv {
+        height: calc(100vh - 90px);
+        overflow: auto;
+        padding: 5px;
+    }
+    .layui-form-item {
+        margin-bottom: 0px;
+    }
+</style>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend>BOM结构树</legend>
+            <div class="layui-form layui-form-pane">
+                <div class="layui-form-item" style="text-align:left;padding:5px 10px">
+                    <span id="bomTreeTip" style="color:#666"></span>
+                </div>
+            </div>
+        </fieldset>
+        <div id="toolbarDiv">
+            <ul id="demoTree" class="dtree" data-id="0"></ul>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['jquery', 'form', 'dtree'], function () {
+        var $ = layui.jquery,
+            dtree = layui.dtree;
+        var itemId = $.request("itemId");
+        var DemoTree = dtree.render({
+            elem: "#demoTree",
+            height: 'full-20',
+            width: '100%',
+            method: "GET",
+            async: true,
+            line: true,
+            icon: ["0", "-1"],
+            initLevel: 3,
+            url: "/MaterialManage/BomInfo/GetBomTree?keyValue=" + itemId + "&v=" + new Date().Format("yyyy-MM-dd hh:mm:ss")
+        });
+        //关闭加载遮罩（_Form布局引入的wcLoading）
+        wcLoading.close();
+        //兜底：即使dtree异步加载慢，也确保遮罩关闭（安全判断，避免重复移除报错）
+        setTimeout(function () {
+            var loadingDom = document.getElementsByClassName("wc-loading")[0];
+            if (loadingDom && loadingDom.parentNode) {
+                loadingDom.parentNode.removeChild(loadingDom);
+            }
+        }, 2000);
+    });
+</script>

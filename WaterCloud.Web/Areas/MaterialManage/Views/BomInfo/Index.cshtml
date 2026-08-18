@@ -258,6 +258,20 @@
             });
             return false;
         });
+        form.on('submit(temp-tree-btn)', function (data) {
+            if (!itemId) {
+                common.modalMsg("未选择主物料", "warning");
+                return false;
+            }
+            common.modalOpen({
+                title: "BOM结构树",
+                url: "/MaterialManage/BomInfo/Tree?itemId=" + itemId,
+                width: "500px",
+                height: "600px",
+                btn: []
+            });
+            return false;
+        });
     });
 
 </script>
@@ -300,6 +314,9 @@
                             </div>
                             <div class="layui-inline">
                                 <button type="submit" id="NF-delete" class="layui-btn layui-btn-danger " lay-submit lay-filter="temp-delete-btn"><i class="layui-icon">&#xe640;</i>删除工序</button>
+                            </div>
+                            <div class="layui-inline">
+                                <button type="button" id="NF-tree" class="layui-btn layui-btn-normal" lay-submit lay-filter="temp-tree-btn"><i class="layui-icon">&#xe6a6;</i>BOM树</button>
                             </div>
                         </div>
                     </form>

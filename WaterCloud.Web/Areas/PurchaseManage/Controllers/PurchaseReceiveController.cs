@@ -92,6 +92,21 @@ namespace WaterCloud.Web.Areas.PurchaseManage.Controllers
                 return await Error(ex.Message, "", keyValue, DbLogType.Delete);
             }
         }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ServiceFilter(typeof(HandlerAuthorizeAttribute))]
+        public async Task<ActionResult> ReturnForm(string keyValue)
+        {
+            try
+            {
+                await _service.ReturnForm(keyValue);
+                return await Success("已生成采购退货单。", "", keyValue, DbLogType.Submit);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue, DbLogType.Submit);
+            }
+        }
         #endregion
     }
 }

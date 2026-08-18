@@ -20,6 +20,7 @@ namespace WaterCloud.Web.Areas.SalesManage.Controllers
     public class SalesOrderController : BaseController
     {
         public SalesOrderService _service { get; set; }
+        public SalesCustomerService _customerService { get; set; }
         [HttpGet]
         public virtual ActionResult AddForm()
         {
@@ -44,6 +45,14 @@ namespace WaterCloud.Web.Areas.SalesManage.Controllers
         public async Task<ActionResult> GetListJson(string keyword)
         {
             var data = await _service.GetList(keyword);
+            return Content(data.ToJson());
+        }
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetCustomerListJson(string keyword)
+        {
+            var data = await _customerService.GetList(keyword);
             return Content(data.ToJson());
         }
 
@@ -121,6 +130,36 @@ namespace WaterCloud.Web.Areas.SalesManage.Controllers
             catch (Exception ex)
             {
                 return await Error(ex.Message, "", keyValue, DbLogType.Delete);
+            }
+        }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ServiceFilter(typeof(HandlerAuthorizeAttribute))]
+        public async Task<ActionResult> CreateWorkOrder(string keyValue)
+        {
+            try
+            {
+                await _service.CreateWorkOrder(keyValue);
+                return await Success("生成工单成功。", "", keyValue, DbLogType.Submit);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue, DbLogType.Submit);
+            }
+        }
+        [HttpPost]
+        [HandlerAjaxOnly]
+        [ServiceFilter(typeof(HandlerAuthorizeAttribute))]
+        public async Task<ActionResult> FinishForm(string keyValue)
+        {
+            try
+            {
+                await _service.FinishForm(keyValue);
+                return await Success("完成，已生成销售发货单。", "", keyValue, DbLogType.Submit);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue, DbLogType.Submit);
             }
         }
         #endregion
