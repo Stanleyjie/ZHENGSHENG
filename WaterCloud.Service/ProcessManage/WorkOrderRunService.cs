@@ -303,7 +303,7 @@ namespace WaterCloud.Service.ProcessManage
             }
             //根据设备获取工单,需要的物料
             var detail = uniwork.IQueryable<WorkOrderDetailEntity>(a => a.F_Id == keyValue)
-                .InnerJoin<BomFormEntity>((a, b) => b.F_MaterialId == a.F_MaterialId && b.F_BomType == 1)
+                .InnerJoin<WorkOrderDetailProcessBandingEntity>((a, b) => a.F_Id == b.F_WorkOrderDetailId)
                 .InnerJoin<ProcessFlowEntity>((a, b, c) => b.F_ProcessId == c.F_Id)
                 .InnerJoin<WorkOrderEntity>((a, b, c, d) => a.F_WorkOrderId == d.F_Id)
                 .Select((a, b, c, d) => new WorkOrderDetailEntity
@@ -327,9 +327,11 @@ namespace WaterCloud.Service.ProcessManage
                     F_ProcessName = c.F_ProcessFlowName,
                     F_WorkOrderCode = d.F_WorkOrderCode
                 })
-                .InnerJoin<WorkOrderDetailProcessBandingEntity>((a, b) => a.F_Id == b.F_WorkOrderDetailId && b.F_ProcessId == a.F_ProcessId)
-                .Select((a, b) => a)
                 .FirstOrDefault();
+            if (detail == null)
+            {
+                throw new Exception("工单明细未绑定工序，无法作业");
+            }
             if (detail.F_DoneNum > 0 && workdetail.F_WorkOrderState != 2)
             {
                 throw new Exception("工单已经开始执行，无法更改");

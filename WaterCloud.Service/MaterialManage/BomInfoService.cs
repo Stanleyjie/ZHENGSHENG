@@ -67,8 +67,6 @@ namespace WaterCloud.Service.MaterialManage
         public async Task SubmitForm(BomFormEntity entity, string listData)
         {
             uniwork.BeginTrans();
-            if (await uniwork.IQueryable<MaterialEntity>(a => a.F_Id == entity.F_MaterialId && a.F_MaterialType == 0).AnyAsync())
-                throw new Exception("原料不能有bom构成");
             if (!string.IsNullOrEmpty(listData))
             {
                 var list = listData.ToList<BomFormEntity>();

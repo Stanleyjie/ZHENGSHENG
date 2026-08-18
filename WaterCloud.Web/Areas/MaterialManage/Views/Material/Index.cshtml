@@ -193,10 +193,6 @@
                      common.modalMsg("未选中数据", "warning");
                      return false;
                  }
-                 if (data[0].F_MaterialType == 0) {
-                     common.modalMsg("原料无需绑定", "warning");
-                     return false;
-                 }
                  common.openNewTabByIframe({
                      title: "工序绑定",
                      href: "/MaterialManage/MaterialBom/Index?keyValue=" + data[0].F_Id,
@@ -278,10 +274,6 @@
                  });
              }
              else if (obj.event === 'bombanding') {
-                 if (obj.data.F_MaterialType == 0) {
-                     common.modalMsg("原料无需绑定", "warning");
-                     return false;
-                 }
                  common.openNewTabByIframe({
                      title: "工序绑定",
                      href: "/MaterialManage/MaterialBom/Index?keyValue=" + obj.data.F_Id,

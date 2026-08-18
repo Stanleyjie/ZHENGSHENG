@@ -79,6 +79,7 @@ namespace WaterCloud.Web.Areas.ProcessManage.Controllers
             }
             catch (Exception ex)
             {
+                LogHelper.WriteWithTime(ex);
                 return await Error(ex.Message, "", keyValue);
             }
         }

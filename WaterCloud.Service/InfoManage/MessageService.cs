@@ -212,6 +212,11 @@ namespace WaterCloud.Service.InfoManage
 
         public async System.Threading.Tasks.Task SendWebSocketMsg(MessageEntity messageEntity)
 		{
+            //未注入SignalR Hub时跳过实时推送（消息已入库）
+            if (_messageHub == null)
+            {
+                return;
+            }
             if (!string.IsNullOrEmpty(messageEntity.companyId) && messageEntity.F_ToUserId.Length==0)
 			{
                 await _messageHub.Clients.Group(messageEntity.companyId).SendAsync("ReceiveMessage", messageEntity.ToJson());
